@@ -61,6 +61,7 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
     m_bumpDuration = std::chrono::milliseconds(qMax(qRound(baseDuration * 0.9), 1));
 
     m_gridResolution = YetAnotherMagicLampConfig::gridResolution();
+    m_maxBumpDistance = YetAnotherMagicLampConfig::maxBumpDistance();
 }
 
 void YetAnotherMagicLampEffect::prePaintScreen(ScreenPrePaintData& data, int time)

@@ -11,5 +11,8 @@
         <entry name="GridResolution" type="UInt">
             <default>30</default>
         </entry>
+        <entry name="MaxBumpDistance" type="UInt">
+            <default>30</default>
+        </entry>
     </group>
 </kcfg>

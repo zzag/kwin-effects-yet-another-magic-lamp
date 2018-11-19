@@ -83,7 +83,7 @@ private:
     std::chrono::milliseconds m_stretchDuration;
     std::chrono::milliseconds m_bumpDuration;
     int m_gridResolution;
-    int m_maxBumpDistance = 50;
+    int m_maxBumpDistance;
     qreal m_stretchFactor = 0.15;
     QEasingCurve m_shapeCurve;
 
