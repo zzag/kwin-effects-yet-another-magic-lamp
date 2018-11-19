@@ -56,10 +56,11 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
     YetAnotherMagicLampConfig::self()->read();
 
     const int baseDuration = animationTime<YetAnotherMagicLampConfig>(250);
-
     m_squashDuration = std::chrono::milliseconds(baseDuration);
     m_stretchDuration = std::chrono::milliseconds(qMax(qRound(baseDuration * 0.4), 1));
     m_bumpDuration = std::chrono::milliseconds(qMax(qRound(baseDuration * 0.9), 1));
+
+    m_gridResolution = YetAnotherMagicLampConfig::gridResolution();
 }
 
 void YetAnotherMagicLampEffect::prePaintScreen(ScreenPrePaintData& data, int time)
