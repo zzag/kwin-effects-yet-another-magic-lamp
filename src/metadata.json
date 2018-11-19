@@ -1,0 +1,23 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "vladzzag@gmail.com",
+                "Name": "Vlad Zagorodniy"
+            }
+        ],
+        "Category": "Appearance",
+        "Description": "Alternative magic lamp effect",
+        "EnabledByDefault": false,
+        "Icon": "preferences-system-windows-effect-yaml",
+        "Id": "kwin4_effect_yaml",
+        "License": "GPL",
+        "Name": "Yet Another Magic Lamp",
+        "ServiceTypes": [
+            "KWin/Effect"
+        ]
+    },
+    "org.kde.kwin.effect": {
+        "exclusiveGroup": "minimize"
+    }
+}
