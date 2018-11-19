@@ -24,6 +24,18 @@
 // std
 #include <cmath>
 
+enum ShapeCurve {
+    Linear = 0,
+    Quad = 1,
+    Cubic = 2,
+    Quart = 3,
+    Quint = 4,
+    Sine = 5,
+    Circ = 6,
+    Bounce = 7,
+    Bezier = 8
+};
+
 static inline std::chrono::milliseconds durationFraction(std::chrono::milliseconds duration, qreal fraction)
 {
     return std::chrono::milliseconds(qMax(qRound(duration.count() * fraction), 1));
@@ -32,8 +44,6 @@ static inline std::chrono::milliseconds durationFraction(std::chrono::millisecon
 YetAnotherMagicLampEffect::YetAnotherMagicLampEffect()
 {
     reconfigure(ReconfigureAll);
-
-    m_shapeCurve.setType(QEasingCurve::InOutSine);
 
     connect(effects, &EffectsHandler::windowMinimized,
         this, &YetAnotherMagicLampEffect::slotWindowMinimized);
@@ -63,6 +73,57 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
     m_gridResolution = YetAnotherMagicLampConfig::gridResolution();
     m_maxBumpDistance = YetAnotherMagicLampConfig::maxBumpDistance();
     m_stretchFactor = YetAnotherMagicLampConfig::initialShapeFactor();
+
+    QEasingCurve curve;
+    const auto shapeCurve = static_cast<ShapeCurve>(YetAnotherMagicLampConfig::shapeCurve());
+    switch (shapeCurve) {
+    case ShapeCurve::Linear:
+        curve.setType(QEasingCurve::Linear);
+        break;
+
+    case ShapeCurve::Quad:
+        curve.setType(QEasingCurve::InOutQuad);
+        break;
+
+    case ShapeCurve::Cubic:
+        curve.setType(QEasingCurve::InOutCubic);
+        break;
+
+    case ShapeCurve::Quart:
+        curve.setType(QEasingCurve::InOutQuart);
+        break;
+
+    case ShapeCurve::Quint:
+        curve.setType(QEasingCurve::InOutQuint);
+        break;
+
+    case ShapeCurve::Sine:
+        curve.setType(QEasingCurve::InOutSine);
+        break;
+
+    case ShapeCurve::Circ:
+        curve.setType(QEasingCurve::InOutCirc);
+        break;
+
+    case ShapeCurve::Bounce:
+        curve.setType(QEasingCurve::InOutBounce);
+        break;
+
+    case ShapeCurve::Bezier: {
+        curve.setType(QEasingCurve::BezierSpline);
+        const QPointF c1(0.5, 0.0);
+        const QPointF c2(0.5, 1.0);
+        const QPointF end(1.0, 1.0);
+        curve.addCubicBezierSegment(c1, c2, end);
+        break;
+    }
+
+    default:
+        // Fallback to the sine curve.
+        curve.setType(QEasingCurve::InOutSine);
+        break;
+    }
+    m_shapeCurve = curve;
 }
 
 void YetAnotherMagicLampEffect::prePaintScreen(ScreenPrePaintData& data, int time)

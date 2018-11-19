@@ -19,5 +19,8 @@
             <min>0.0</min>
             <max>1.0</max>
         </entry>
+        <entry name="ShapeCurve" type="Int">
+            <default>5</default>
+        </entry>
     </group>
 </kcfg>
