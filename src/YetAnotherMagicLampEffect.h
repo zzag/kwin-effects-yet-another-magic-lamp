@@ -84,7 +84,7 @@ private:
     std::chrono::milliseconds m_bumpDuration;
     int m_gridResolution;
     int m_maxBumpDistance;
-    qreal m_stretchFactor = 0.15;
+    qreal m_stretchFactor; // TODO: Rename to m_shapeFactor.
     QEasingCurve m_shapeCurve;
 
     enum class AnimationKind {

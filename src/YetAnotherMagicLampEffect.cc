@@ -62,6 +62,7 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
 
     m_gridResolution = YetAnotherMagicLampConfig::gridResolution();
     m_maxBumpDistance = YetAnotherMagicLampConfig::maxBumpDistance();
+    m_stretchFactor = YetAnotherMagicLampConfig::initialShapeFactor();
 }
 
 void YetAnotherMagicLampEffect::prePaintScreen(ScreenPrePaintData& data, int time)

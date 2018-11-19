@@ -14,5 +14,10 @@
         <entry name="MaxBumpDistance" type="UInt">
             <default>30</default>
         </entry>
+        <entry name="InitialShapeFactor" type="Double">
+            <default>0.15</default>
+            <min>0.0</min>
+            <max>1.0</max>
+        </entry>
     </group>
 </kcfg>
