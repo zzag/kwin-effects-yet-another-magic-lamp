@@ -1,5 +1,7 @@
 # YAML (Yet Another Magic Lamp)
 
+![Screenshot](doc/Screenshot.png)
+
 ### Installation
 
 #### Build from source
