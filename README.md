@@ -2,6 +2,8 @@
 
 ![Screenshot](doc/Screenshot.png)
 
+[Demo](https://www.youtube.com/watch?v=BR4bUwFZDS8)
+
 ### Installation
 
 #### Build from source
