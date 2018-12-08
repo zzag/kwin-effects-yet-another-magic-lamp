@@ -20,9 +20,7 @@
 // kwineffects
 #include <kwineffects.h>
 
-using namespace KWin;
-
-class YetAnotherMagicLampEffect : public Effect {
+class YetAnotherMagicLampEffect : public KWin::Effect {
     Q_OBJECT
 
 public:
@@ -31,9 +29,9 @@ public:
 
     void reconfigure(ReconfigureFlags flags) override;
 
-    void prePaintScreen(ScreenPrePaintData& data, int time) override;
-    void prePaintWindow(EffectWindow* w, WindowPrePaintData& data, int time) override;
-    void paintWindow(EffectWindow* w, int mask, QRegion region, WindowPaintData& data) override;
+    void prePaintScreen(KWin::ScreenPrePaintData& data, int time) override;
+    void prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time) override;
+    void paintWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data) override;
     void postPaintScreen() override;
 
     bool isActive() const override;
@@ -42,17 +40,17 @@ public:
     static bool supported();
 
 private Q_SLOTS:
-    void slotWindowMinimized(EffectWindow* w);
-    void slotWindowUnminimized(EffectWindow* w);
-    void slotWindowDeleted(EffectWindow* w);
+    void slotWindowMinimized(KWin::EffectWindow* w);
+    void slotWindowUnminimized(KWin::EffectWindow* w);
+    void slotWindowDeleted(KWin::EffectWindow* w);
     void slotActiveFullScreenEffectChanged();
 
 private:
     struct Animation;
-    void paintBumpStage(const Animation& animation, WindowPaintData& data) const;
-    void paintSquashStage(const EffectWindow* w, const Animation& animation, WindowPaintData& data) const;
-    void paintStretch1Stage(const EffectWindow* w, const Animation& animation, WindowPaintData& data) const;
-    void paintStretch2Stage(const EffectWindow* w, const Animation& animation, WindowPaintData& data) const;
+    void paintBumpStage(const Animation& animation, KWin::WindowPaintData& data) const;
+    void paintSquashStage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const;
+    void paintStretch1Stage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const;
+    void paintStretch2Stage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const;
 
     struct TransformParams {
         qreal stretchProgress;
@@ -63,20 +61,20 @@ private:
         QRect iconRect;
     };
 
-    void transformTop(WindowQuadList& quads, const TransformParams& params) const;
-    void transformBottom(WindowQuadList& quads, const TransformParams& params) const;
-    void transformLeft(WindowQuadList& quads, const TransformParams& params) const;
-    void transformRight(WindowQuadList& quads, const TransformParams& params) const;
+    void transformTop(KWin::WindowQuadList& quads, const TransformParams& params) const;
+    void transformBottom(KWin::WindowQuadList& quads, const TransformParams& params) const;
+    void transformLeft(KWin::WindowQuadList& quads, const TransformParams& params) const;
+    void transformRight(KWin::WindowQuadList& quads, const TransformParams& params) const;
 
     enum class Direction;
-    void transformGeneric(WindowQuadList& quads, Direction direction, const TransformParams& params) const;
+    void transformGeneric(KWin::WindowQuadList& quads, Direction direction, const TransformParams& params) const;
 
     bool updateInAnimationStage(Animation& animation);
     bool updateOutAnimationStage(Animation& animation);
 
-    Direction findDirectionToIcon(const EffectWindow* w) const;
-    int computeBumpDistance(const EffectWindow* w, Direction direction) const;
-    qreal computeStretchFactor(const EffectWindow* w, Direction direction, int bumpDistance) const;
+    Direction findDirectionToIcon(const KWin::EffectWindow* w) const;
+    int computeBumpDistance(const KWin::EffectWindow* w, Direction direction) const;
+    qreal computeStretchFactor(const KWin::EffectWindow* w, Direction direction, int bumpDistance) const;
 
 private:
     std::chrono::milliseconds m_squashDuration;
@@ -109,14 +107,14 @@ private:
     struct Animation {
         AnimationKind kind;
         AnimationStage stage;
-        TimeLine timeLine;
+        KWin::TimeLine timeLine;
         Direction direction;
         int bumpDistance;
         qreal stretchFactor;
         bool clip;
     };
 
-    QHash<const EffectWindow*, Animation> m_animations;
+    QHash<const KWin::EffectWindow*, Animation> m_animations;
 };
 
 inline int YetAnotherMagicLampEffect::requestedEffectChainPosition() const

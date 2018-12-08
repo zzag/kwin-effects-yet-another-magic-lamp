@@ -45,13 +45,13 @@ YetAnotherMagicLampEffect::YetAnotherMagicLampEffect()
 {
     reconfigure(ReconfigureAll);
 
-    connect(effects, &EffectsHandler::windowMinimized,
+    connect(KWin::effects, &KWin::EffectsHandler::windowMinimized,
         this, &YetAnotherMagicLampEffect::slotWindowMinimized);
-    connect(effects, &EffectsHandler::windowUnminimized,
+    connect(KWin::effects, &KWin::EffectsHandler::windowUnminimized,
         this, &YetAnotherMagicLampEffect::slotWindowUnminimized);
-    connect(effects, &EffectsHandler::windowDeleted,
+    connect(KWin::effects, &KWin::EffectsHandler::windowDeleted,
         this, &YetAnotherMagicLampEffect::slotWindowDeleted);
-    connect(effects, &EffectsHandler::activeFullScreenEffectChanged,
+    connect(KWin::effects, &KWin::EffectsHandler::activeFullScreenEffectChanged,
         this, &YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged);
 }
 
@@ -126,7 +126,7 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
     m_shapeCurve = curve;
 }
 
-void YetAnotherMagicLampEffect::prePaintScreen(ScreenPrePaintData& data, int time)
+void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, int time)
 {
     const std::chrono::milliseconds delta(time);
 
@@ -138,15 +138,15 @@ void YetAnotherMagicLampEffect::prePaintScreen(ScreenPrePaintData& data, int tim
 
     data.mask |= PAINT_SCREEN_WITH_TRANSFORMED_WINDOWS;
 
-    effects->prePaintScreen(data, time);
+    KWin::effects->prePaintScreen(data, time);
 }
 
-void YetAnotherMagicLampEffect::prePaintWindow(EffectWindow* w, WindowPrePaintData& data, int time)
+void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time)
 {
     auto animationIt = m_animations.constFind(w);
     if (animationIt != m_animations.constEnd()) {
         data.setTransformed();
-        w->enablePainting(EffectWindow::PAINT_DISABLED_BY_MINIMIZE);
+        w->enablePainting(KWin::EffectWindow::PAINT_DISABLED_BY_MINIMIZE);
 
         // Windows are transformed in Stretch1, Stretch2, and Squash stages.
         if ((*animationIt).stage != AnimationStage::Bump) {
@@ -154,10 +154,10 @@ void YetAnotherMagicLampEffect::prePaintWindow(EffectWindow* w, WindowPrePaintDa
         }
     }
 
-    effects->prePaintWindow(w, data, time);
+    KWin::effects->prePaintWindow(w, data, time);
 }
 
-void YetAnotherMagicLampEffect::paintBumpStage(const Animation& animation, WindowPaintData& data) const
+void YetAnotherMagicLampEffect::paintBumpStage(const Animation& animation, KWin::WindowPaintData& data) const
 {
     const qreal t = animation.timeLine.value();
 
@@ -183,12 +183,12 @@ void YetAnotherMagicLampEffect::paintBumpStage(const Animation& animation, Windo
     }
 }
 
-void YetAnotherMagicLampEffect::transformTop(WindowQuadList& quads, const TransformParams& params) const
+void YetAnotherMagicLampEffect::transformTop(KWin::WindowQuadList& quads, const TransformParams& params) const
 {
     const qreal distance = params.windowRect.bottom() - params.iconRect.bottom() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
-        WindowQuad& quad = quads[i];
+        KWin::WindowQuad& quad = quads[i];
 
         const qreal topOffset = quad[0].y() - interpolate(0.0, distance, params.squashProgress);
         const qreal bottomOffset = quad[2].y() - interpolate(0.0, distance, params.squashProgress);
@@ -216,12 +216,12 @@ void YetAnotherMagicLampEffect::transformTop(WindowQuadList& quads, const Transf
     }
 }
 
-void YetAnotherMagicLampEffect::transformBottom(WindowQuadList& quads, const TransformParams& params) const
+void YetAnotherMagicLampEffect::transformBottom(KWin::WindowQuadList& quads, const TransformParams& params) const
 {
     const qreal distance = params.iconRect.top() - params.windowRect.top() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
-        WindowQuad& quad = quads[i];
+        KWin::WindowQuad& quad = quads[i];
 
         const qreal topOffset = quad[0].y() + interpolate(0.0, distance, params.squashProgress);
         const qreal bottomOffset = quad[2].y() + interpolate(0.0, distance, params.squashProgress);
@@ -249,12 +249,12 @@ void YetAnotherMagicLampEffect::transformBottom(WindowQuadList& quads, const Tra
     }
 }
 
-void YetAnotherMagicLampEffect::transformLeft(WindowQuadList& quads, const TransformParams& params) const
+void YetAnotherMagicLampEffect::transformLeft(KWin::WindowQuadList& quads, const TransformParams& params) const
 {
     const qreal distance = params.windowRect.right() - params.iconRect.right() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
-        WindowQuad& quad = quads[i];
+        KWin::WindowQuad& quad = quads[i];
 
         const qreal leftOffset = quad[0].x() - interpolate(0.0, distance, params.squashProgress);
         const qreal rightOffset = quad[2].x() - interpolate(0.0, distance, params.squashProgress);
@@ -282,12 +282,12 @@ void YetAnotherMagicLampEffect::transformLeft(WindowQuadList& quads, const Trans
     }
 }
 
-void YetAnotherMagicLampEffect::transformRight(WindowQuadList& quads, const TransformParams& params) const
+void YetAnotherMagicLampEffect::transformRight(KWin::WindowQuadList& quads, const TransformParams& params) const
 {
     const qreal distance = params.iconRect.left() - params.windowRect.left() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
-        WindowQuad& quad = quads[i];
+        KWin::WindowQuad& quad = quads[i];
 
         const qreal leftOffset = quad[0].x() + interpolate(0.0, distance, params.squashProgress);
         const qreal rightOffset = quad[2].x() + interpolate(0.0, distance, params.squashProgress);
@@ -315,7 +315,7 @@ void YetAnotherMagicLampEffect::transformRight(WindowQuadList& quads, const Tran
     }
 }
 
-void YetAnotherMagicLampEffect::transformGeneric(WindowQuadList& quads, Direction direction, const TransformParams& params) const
+void YetAnotherMagicLampEffect::transformGeneric(KWin::WindowQuadList& quads, Direction direction, const TransformParams& params) const
 {
     switch (direction) {
     case Direction::Top:
@@ -339,7 +339,7 @@ void YetAnotherMagicLampEffect::transformGeneric(WindowQuadList& quads, Directio
     }
 }
 
-void YetAnotherMagicLampEffect::paintSquashStage(const EffectWindow* w, const Animation& animation, WindowPaintData& data) const
+void YetAnotherMagicLampEffect::paintSquashStage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const
 {
     TransformParams params;
     params.squashProgress = animation.timeLine.value();
@@ -352,7 +352,7 @@ void YetAnotherMagicLampEffect::paintSquashStage(const EffectWindow* w, const An
     transformGeneric(data.quads, animation.direction, params);
 }
 
-void YetAnotherMagicLampEffect::paintStretch1Stage(const EffectWindow* w, const Animation& animation, WindowPaintData& data) const
+void YetAnotherMagicLampEffect::paintStretch1Stage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const
 {
     TransformParams params;
     params.squashProgress = 0.0;
@@ -365,7 +365,7 @@ void YetAnotherMagicLampEffect::paintStretch1Stage(const EffectWindow* w, const 
     transformGeneric(data.quads, animation.direction, params);
 }
 
-void YetAnotherMagicLampEffect::paintStretch2Stage(const EffectWindow* w, const Animation& animation, WindowPaintData& data) const
+void YetAnotherMagicLampEffect::paintStretch2Stage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const
 {
     TransformParams params;
     params.squashProgress = 0.0;
@@ -378,11 +378,11 @@ void YetAnotherMagicLampEffect::paintStretch2Stage(const EffectWindow* w, const 
     transformGeneric(data.quads, animation.direction, params);
 }
 
-void YetAnotherMagicLampEffect::paintWindow(EffectWindow* w, int mask, QRegion region, WindowPaintData& data)
+void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data)
 {
     auto animationIt = m_animations.constFind(w);
     if (animationIt == m_animations.constEnd()) {
-        effects->paintWindow(w, mask, region, data);
+        KWin::effects->paintWindow(w, mask, region, data);
         return;
     }
 
@@ -446,7 +446,7 @@ void YetAnotherMagicLampEffect::paintWindow(EffectWindow* w, int mask, QRegion r
         region = QRegion(clipRect);
     }
 
-    effects->paintWindow(w, mask, region, data);
+    KWin::effects->paintWindow(w, mask, region, data);
 }
 
 bool YetAnotherMagicLampEffect::updateInAnimationStage(Animation& animation)
@@ -455,7 +455,7 @@ bool YetAnotherMagicLampEffect::updateInAnimationStage(Animation& animation)
     case AnimationStage::Bump:
         animation.stage = AnimationStage::Stretch1;
         animation.timeLine.reset();
-        animation.timeLine.setDirection(TimeLine::Forward);
+        animation.timeLine.setDirection(KWin::TimeLine::Forward);
         animation.timeLine.setDuration(
             durationFraction(m_stretchDuration, animation.stretchFactor));
         animation.timeLine.setEasingCurve(QEasingCurve::Linear);
@@ -466,7 +466,7 @@ bool YetAnotherMagicLampEffect::updateInAnimationStage(Animation& animation)
     case AnimationStage::Stretch2:
         animation.stage = AnimationStage::Squash;
         animation.timeLine.reset();
-        animation.timeLine.setDirection(TimeLine::Forward);
+        animation.timeLine.setDirection(KWin::TimeLine::Forward);
         animation.timeLine.setDuration(m_squashDuration);
         animation.timeLine.setEasingCurve(QEasingCurve::Linear);
         animation.clip = true;
@@ -492,7 +492,7 @@ bool YetAnotherMagicLampEffect::updateOutAnimationStage(Animation& animation)
         }
         animation.stage = AnimationStage::Bump;
         animation.timeLine.reset();
-        animation.timeLine.setDirection(TimeLine::Backward);
+        animation.timeLine.setDirection(KWin::TimeLine::Backward);
         animation.timeLine.setDuration(m_bumpDuration);
         animation.timeLine.setEasingCurve(QEasingCurve::Linear);
         animation.clip = false;
@@ -504,7 +504,7 @@ bool YetAnotherMagicLampEffect::updateOutAnimationStage(Animation& animation)
     case AnimationStage::Squash:
         animation.stage = AnimationStage::Stretch2;
         animation.timeLine.reset();
-        animation.timeLine.setDirection(TimeLine::Backward);
+        animation.timeLine.setDirection(KWin::TimeLine::Backward);
         animation.timeLine.setDuration(
             durationFraction(m_stretchDuration, animation.stretchFactor));
         animation.timeLine.setEasingCurve(QEasingCurve::Linear);
@@ -547,9 +547,9 @@ void YetAnotherMagicLampEffect::postPaintScreen()
     }
 
     // TODO: Don't do full repaints.
-    effects->addRepaintFull();
+    KWin::effects->addRepaintFull();
 
-    effects->postPaintScreen();
+    KWin::effects->postPaintScreen();
 }
 
 bool YetAnotherMagicLampEffect::isActive() const
@@ -559,18 +559,18 @@ bool YetAnotherMagicLampEffect::isActive() const
 
 bool YetAnotherMagicLampEffect::supported()
 {
-    if (!effects->animationsSupported()) {
+    if (!KWin::effects->animationsSupported()) {
         return false;
     }
-    if (effects->isOpenGLCompositing()) {
+    if (KWin::effects->isOpenGLCompositing()) {
         return true;
     }
     return false;
 }
 
-void YetAnotherMagicLampEffect::slotWindowMinimized(EffectWindow* w)
+void YetAnotherMagicLampEffect::slotWindowMinimized(KWin::EffectWindow* w)
 {
-    if (effects->activeFullScreenEffect()) {
+    if (KWin::effects->activeFullScreenEffect()) {
         return;
     }
 
@@ -595,26 +595,26 @@ void YetAnotherMagicLampEffect::slotWindowMinimized(EffectWindow* w)
     if (animation.bumpDistance != 0) {
         animation.stage = AnimationStage::Bump;
         animation.timeLine.reset();
-        animation.timeLine.setDirection(TimeLine::Forward);
+        animation.timeLine.setDirection(KWin::TimeLine::Forward);
         animation.timeLine.setDuration(m_bumpDuration);
         animation.timeLine.setEasingCurve(QEasingCurve::Linear);
         animation.clip = false;
     } else {
         animation.stage = AnimationStage::Stretch1;
         animation.timeLine.reset();
-        animation.timeLine.setDirection(TimeLine::Forward);
+        animation.timeLine.setDirection(KWin::TimeLine::Forward);
         animation.timeLine.setDuration(
             durationFraction(m_stretchDuration, animation.stretchFactor));
         animation.timeLine.setEasingCurve(QEasingCurve::Linear);
         animation.clip = true;
     }
 
-    effects->addRepaintFull();
+    KWin::effects->addRepaintFull();
 }
 
-void YetAnotherMagicLampEffect::slotWindowUnminimized(EffectWindow* w)
+void YetAnotherMagicLampEffect::slotWindowUnminimized(KWin::EffectWindow* w)
 {
-    if (effects->activeFullScreenEffect()) {
+    if (KWin::effects->activeFullScreenEffect()) {
         return;
     }
 
@@ -638,22 +638,22 @@ void YetAnotherMagicLampEffect::slotWindowUnminimized(EffectWindow* w)
 
     animation.stage = AnimationStage::Squash;
     animation.timeLine.reset();
-    animation.timeLine.setDirection(TimeLine::Backward);
+    animation.timeLine.setDirection(KWin::TimeLine::Backward);
     animation.timeLine.setDuration(m_squashDuration);
     animation.timeLine.setEasingCurve(QEasingCurve::Linear);
     animation.clip = true;
 
-    effects->addRepaintFull();
+    KWin::effects->addRepaintFull();
 }
 
-void YetAnotherMagicLampEffect::slotWindowDeleted(EffectWindow* w)
+void YetAnotherMagicLampEffect::slotWindowDeleted(KWin::EffectWindow* w)
 {
     m_animations.remove(w);
 }
 
 void YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged()
 {
-    if (effects->activeFullScreenEffect() == nullptr) {
+    if (KWin::effects->activeFullScreenEffect() == nullptr) {
         return;
     }
 
@@ -661,25 +661,25 @@ void YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged()
 }
 
 YetAnotherMagicLampEffect::Direction
-YetAnotherMagicLampEffect::findDirectionToIcon(const EffectWindow* w) const
+YetAnotherMagicLampEffect::findDirectionToIcon(const KWin::EffectWindow* w) const
 {
     const QRect iconRect = w->iconGeometry();
 
-    const EffectWindowList windows = effects->stackingOrder();
+    const KWin::EffectWindowList windows = KWin::effects->stackingOrder();
     auto panelIt = std::find_if(windows.constBegin(), windows.constEnd(),
-        [&iconRect](const EffectWindow* w) {
+        [&iconRect](const KWin::EffectWindow* w) {
             if (!w->isDock()) {
                 return false;
             }
             return w->geometry().intersects(iconRect);
         });
-    const EffectWindow* panel = (panelIt != windows.constEnd())
+    const KWin::EffectWindow* panel = (panelIt != windows.constEnd())
         ? (*panelIt)
         : nullptr;
 
     Direction direction;
     if (panel != nullptr) {
-        const QRect panelScreen = effects->clientArea(ScreenArea, (*panelIt));
+        const QRect panelScreen = KWin::effects->clientArea(KWin::ScreenArea, (*panelIt));
         if (panel->width() >= panel->height()) {
             direction = (panel->y() == panelScreen.y())
                 ? Direction::Top
@@ -690,7 +690,7 @@ YetAnotherMagicLampEffect::findDirectionToIcon(const EffectWindow* w) const
                 : Direction::Right;
         }
     } else {
-        const QRect iconScreen = effects->clientArea(ScreenArea, iconRect.center(), effects->currentDesktop());
+        const QRect iconScreen = KWin::effects->clientArea(KWin::ScreenArea, iconRect.center(), KWin::effects->currentDesktop());
         const QRect rect = iconScreen.intersected(iconRect);
 
         // TODO: Explain why this is in some sense wrong.
@@ -724,7 +724,7 @@ YetAnotherMagicLampEffect::findDirectionToIcon(const EffectWindow* w) const
     return direction;
 }
 
-int YetAnotherMagicLampEffect::computeBumpDistance(const EffectWindow* w, Direction direction) const
+int YetAnotherMagicLampEffect::computeBumpDistance(const KWin::EffectWindow* w, Direction direction) const
 {
     const QRect windowRect = w->geometry();
     const QRect iconRect = w->iconGeometry();
@@ -756,7 +756,7 @@ int YetAnotherMagicLampEffect::computeBumpDistance(const EffectWindow* w, Direct
     return bumpDistance;
 }
 
-qreal YetAnotherMagicLampEffect::computeStretchFactor(const EffectWindow* w, Direction direction, int bumpDistance) const
+qreal YetAnotherMagicLampEffect::computeStretchFactor(const KWin::EffectWindow* w, Direction direction, int bumpDistance) const
 {
     const QRect windowRect = w->geometry();
     const QRect iconRect = w->iconGeometry();
