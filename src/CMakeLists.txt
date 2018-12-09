@@ -16,6 +16,7 @@ find_package (KWinEffects REQUIRED)
 add_subdirectory (kcm)
 
 set (effect_SRCS
+    Model.cc
     OffscreenRenderer.cc
     YetAnotherMagicLampEffect.cc
     plugin.cc

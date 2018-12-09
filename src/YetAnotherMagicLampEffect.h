@@ -17,6 +17,10 @@
 
 #pragma once
 
+// own
+#include "Model.h"
+#include "common.h"
+
 // kwineffects
 #include <kwineffects.h>
 
@@ -46,75 +50,10 @@ private Q_SLOTS:
     void slotActiveFullScreenEffectChanged();
 
 private:
-    struct Animation;
-    void paintBumpStage(const Animation& animation, KWin::WindowPaintData& data) const;
-    void paintSquashStage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const;
-    void paintStretch1Stage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const;
-    void paintStretch2Stage(const KWin::EffectWindow* w, const Animation& animation, KWin::WindowPaintData& data) const;
-
-    struct TransformParams {
-        qreal stretchProgress;
-        qreal squashProgress;
-        qreal bumpProgress;
-        qreal bumpDistance;
-        QRect windowRect;
-        QRect iconRect;
-    };
-
-    void transformTop(KWin::WindowQuadList& quads, const TransformParams& params) const;
-    void transformBottom(KWin::WindowQuadList& quads, const TransformParams& params) const;
-    void transformLeft(KWin::WindowQuadList& quads, const TransformParams& params) const;
-    void transformRight(KWin::WindowQuadList& quads, const TransformParams& params) const;
-
-    enum class Direction;
-    void transformGeneric(KWin::WindowQuadList& quads, Direction direction, const TransformParams& params) const;
-
-    bool updateInAnimationStage(Animation& animation);
-    bool updateOutAnimationStage(Animation& animation);
-
-    Direction findDirectionToIcon(const KWin::EffectWindow* w) const;
-    int computeBumpDistance(const KWin::EffectWindow* w, Direction direction) const;
-    qreal computeStretchFactor(const KWin::EffectWindow* w, Direction direction, int bumpDistance) const;
-
-private:
-    std::chrono::milliseconds m_squashDuration;
-    std::chrono::milliseconds m_stretchDuration;
-    std::chrono::milliseconds m_bumpDuration;
+    Model::Parameters m_modelParameters;
     int m_gridResolution;
-    int m_maxBumpDistance;
-    qreal m_stretchFactor; // TODO: Rename to m_shapeFactor.
-    QEasingCurve m_shapeCurve;
 
-    enum class AnimationKind {
-        In,
-        Out
-    };
-
-    enum class AnimationStage {
-        Bump,
-        Stretch1,
-        Stretch2,
-        Squash
-    };
-
-    enum class Direction {
-        Top,
-        Right,
-        Bottom,
-        Left
-    };
-
-    struct Animation {
-        AnimationKind kind;
-        AnimationStage stage;
-        KWin::TimeLine timeLine;
-        Direction direction;
-        int bumpDistance;
-        qreal stretchFactor;
-        bool clip;
-    };
-
-    QHash<const KWin::EffectWindow*, Animation> m_animations;
+    QHash<KWin::EffectWindow*, Model> m_models;
 };
 
 inline int YetAnotherMagicLampEffect::requestedEffectChainPosition() const
