@@ -17,6 +17,7 @@
 
 // Own
 #include "YetAnotherMagicLampEffect.h"
+#include "OffscreenRenderer.h"
 
 // Auto-generated
 #include "YetAnotherMagicLampConfig.h"
@@ -48,6 +49,8 @@ YetAnotherMagicLampEffect::YetAnotherMagicLampEffect()
         this, &YetAnotherMagicLampEffect::slotWindowDeleted);
     connect(KWin::effects, &KWin::EffectsHandler::activeFullScreenEffectChanged,
         this, &YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged);
+
+    m_offscreenRenderer = new OffscreenRenderer(this);
 }
 
 YetAnotherMagicLampEffect::~YetAnotherMagicLampEffect()
@@ -154,6 +157,9 @@ void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRe
         return;
     }
 
+    KWin::GLTexture* texture = m_offscreenRenderer->render(w);
+    texture->generateMipmaps();
+
     if ((*modelIt).needsClip()) {
         region = (*modelIt).clipRegion();
     }
@@ -166,6 +172,7 @@ void YetAnotherMagicLampEffect::postPaintScreen()
     auto modelIt = m_models.begin();
     while (modelIt != m_models.end()) {
         if ((*modelIt).done()) {
+            m_offscreenRenderer->unregisterWindow(modelIt.key());
             modelIt = m_models.erase(modelIt);
         } else {
             ++modelIt;
@@ -210,6 +217,8 @@ void YetAnotherMagicLampEffect::slotWindowMinimized(KWin::EffectWindow* w)
     model.setParameters(m_modelParameters);
     model.start(Model::AnimationKind::Minimize);
 
+    m_offscreenRenderer->registerWindow(w);
+
     KWin::effects->addRepaintFull();
 }
 
@@ -228,6 +237,8 @@ void YetAnotherMagicLampEffect::slotWindowUnminimized(KWin::EffectWindow* w)
     model.setWindow(w);
     model.setParameters(m_modelParameters);
     model.start(Model::AnimationKind::Unminimize);
+
+    m_offscreenRenderer->registerWindow(w);
 
     KWin::effects->addRepaintFull();
 }

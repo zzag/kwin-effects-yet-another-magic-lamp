@@ -24,6 +24,8 @@
 // kwineffects
 #include <kwineffects.h>
 
+class OffscreenRenderer;
+
 class YetAnotherMagicLampEffect : public KWin::Effect {
     Q_OBJECT
 
@@ -54,6 +56,7 @@ private:
     int m_gridResolution;
 
     QHash<KWin::EffectWindow*, Model> m_models;
+    OffscreenRenderer* m_offscreenRenderer;
 };
 
 inline int YetAnotherMagicLampEffect::requestedEffectChainPosition() const

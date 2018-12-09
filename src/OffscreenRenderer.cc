@@ -40,7 +40,9 @@ OffscreenRenderer::~OffscreenRenderer()
 
 void OffscreenRenderer::registerWindow(KWin::EffectWindow* w)
 {
-    Q_ASSERT(!m_renderResources.contains(w));
+    if (m_renderResources.contains(w)) {
+        return;
+    }
 
     RenderResources resources = allocateRenderResources(w);
     if (resources.isValid()) {
