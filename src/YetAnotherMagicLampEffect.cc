@@ -118,8 +118,8 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
 
     const int baseDuration = animationTime<YetAnotherMagicLampConfig>(250);
     m_modelParameters.squashDuration = std::chrono::milliseconds(baseDuration);
-    m_modelParameters.stretchDuration = std::chrono::milliseconds(qMax(qRound(baseDuration * 0.4), 1));
-    m_modelParameters.bumpDuration = std::chrono::milliseconds(qMax(qRound(baseDuration * 0.9), 1));
+    m_modelParameters.stretchDuration = std::chrono::milliseconds(qMax(qRound(baseDuration * 0.5), 1));
+    m_modelParameters.bumpDuration = std::chrono::milliseconds(baseDuration);
     m_modelParameters.shapeFactor = YetAnotherMagicLampConfig::initialShapeFactor();
     m_modelParameters.bumpDistance = YetAnotherMagicLampConfig::maxBumpDistance();
 
