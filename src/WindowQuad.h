@@ -64,6 +64,11 @@ public:
         return m_vertices[index];
     }
 
+    const WindowVertex& operator[](int index) const
+    {
+        return m_vertices[index];
+    }
+
 private:
     WindowVertex m_vertices[4];
 };

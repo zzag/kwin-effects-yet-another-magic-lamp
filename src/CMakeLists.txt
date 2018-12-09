@@ -18,6 +18,7 @@ add_subdirectory (kcm)
 set (effect_SRCS
     Model.cc
     OffscreenRenderer.cc
+    WindowMeshRenderer.cc
     YetAnotherMagicLampEffect.cc
     plugin.cc
     utils.cc
