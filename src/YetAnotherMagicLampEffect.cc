@@ -18,6 +18,7 @@
 // Own
 #include "YetAnotherMagicLampEffect.h"
 #include "OffscreenRenderer.h"
+#include "WindowMeshRenderer.h"
 
 // Auto-generated
 #include "YetAnotherMagicLampConfig.h"
@@ -51,6 +52,7 @@ YetAnotherMagicLampEffect::YetAnotherMagicLampEffect()
         this, &YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged);
 
     m_offscreenRenderer = new OffscreenRenderer(this);
+    m_meshRenderer = new WindowMeshRenderer(this);
 }
 
 YetAnotherMagicLampEffect::~YetAnotherMagicLampEffect()
@@ -157,14 +159,15 @@ void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRe
         return;
     }
 
-    KWin::GLTexture* texture = m_offscreenRenderer->render(w);
-    texture->generateMipmaps();
+    QVector<WindowQuad> quads = m_meshRenderer->makeGrid(w, m_gridResolution);
+    (*modelIt).apply(quads);
 
     if ((*modelIt).needsClip()) {
         region = (*modelIt).clipRegion();
     }
 
-    KWin::effects->paintWindow(w, mask, region, data);
+    KWin::GLTexture* texture = m_offscreenRenderer->render(w);
+    m_meshRenderer->render(w, quads, texture, region);
 }
 
 void YetAnotherMagicLampEffect::postPaintScreen()

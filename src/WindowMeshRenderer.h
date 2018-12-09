@@ -31,5 +31,9 @@ class WindowMeshRenderer : public QObject {
     Q_OBJECT
 
 public:
+    explicit WindowMeshRenderer(QObject* parent = nullptr);
+
+    QVector<WindowQuad> makeGrid(const KWin::EffectWindow* w, int blockSize);
+
     void render(KWin::EffectWindow* w, const QVector<WindowQuad>& quads, KWin::GLTexture* texture, const QRegion& clipRegion) const;
 };

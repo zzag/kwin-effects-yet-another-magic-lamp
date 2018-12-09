@@ -25,6 +25,7 @@
 #include <kwineffects.h>
 
 class OffscreenRenderer;
+class WindowMeshRenderer;
 
 class YetAnotherMagicLampEffect : public KWin::Effect {
     Q_OBJECT
@@ -57,6 +58,7 @@ private:
 
     QHash<KWin::EffectWindow*, Model> m_models;
     OffscreenRenderer* m_offscreenRenderer;
+    WindowMeshRenderer* m_meshRenderer;
 };
 
 inline int YetAnotherMagicLampEffect::requestedEffectChainPosition() const

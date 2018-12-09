@@ -37,6 +37,70 @@
 #include <emmintrin.h>
 #endif
 
+WindowMeshRenderer::WindowMeshRenderer(QObject* parent)
+    : QObject(parent)
+{
+}
+
+QVector<WindowQuad> WindowMeshRenderer::makeGrid(const KWin::EffectWindow* w, int gridResolution)
+{
+    QVector<WindowQuad> quads;
+    quads.reserve(gridResolution * gridResolution);
+
+    const QRectF geometry = w->geometry();
+    const QRectF expandedGeometry = w->expandedGeometry();
+
+    const qreal initialX = expandedGeometry.x() - geometry.x();
+    const qreal initialY = expandedGeometry.y() - geometry.y();
+    const qreal initialU = 0.0;
+    const qreal initialV = 0.0;
+
+    const qreal dx = static_cast<qreal>(w->expandedGeometry().width()) / gridResolution;
+    const qreal dy = static_cast<qreal>(w->expandedGeometry().height()) / gridResolution;
+    const qreal du = 1.0 / gridResolution;
+    const qreal dv = 1.0 / gridResolution;
+
+    qreal y = initialY;
+    qreal v = initialV;
+    for (int i = 0; i < gridResolution; ++i) {
+        qreal x = initialX;
+        qreal u = initialU;
+        for (int j = 0; j < gridResolution; ++j) {
+            WindowQuad quad;
+
+            quad[0].setX(x);
+            quad[0].setY(y);
+            quad[0].setU(u);
+            quad[0].setV(v);
+
+            quad[1].setX(x + dx);
+            quad[1].setY(y);
+            quad[1].setU(u + du);
+            quad[1].setV(v);
+
+            quad[2].setX(x + dx);
+            quad[2].setY(y + dy);
+            quad[2].setU(u + du);
+            quad[2].setV(v + dv);
+
+            quad[3].setX(x);
+            quad[3].setY(y + dy);
+            quad[3].setU(u);
+            quad[3].setV(v + dv);
+
+            quads.append(quad);
+            x += dx;
+            u += du;
+        }
+        y += dy;
+        v += dv;
+    }
+
+    // TODO: Build quads.
+
+    return quads;
+}
+
 // Copied from libkwineffects.
 static void uploadQuads(KWin::GLVertexBuffer* vbo, GLenum primitiveType,
     const QVector<WindowQuad>& quads, const QMatrix4x4& textureMatrix,
@@ -167,7 +231,7 @@ void WindowMeshRenderer::render(KWin::EffectWindow* w, const QVector<WindowQuad>
     QMatrix4x4 modelViewProjection;
     const QRect screenRect = KWin::effects->virtualScreenGeometry();
     modelViewProjection.ortho(0, screenRect.width(), screenRect.height(), 0, 0, 65535);
-    modelViewProjection.translate(w->expandedGeometry().x(), w->expandedGeometry().y());
+    modelViewProjection.translate(w->x(), w->y());
     shader->setUniform(KWin::GLShader::ModelViewProjectionMatrix, modelViewProjection);
 
     const GLenum primitiveType = KWin::GLVertexBuffer::supportsIndexedQuads() ? GL_QUADS : GL_TRIANGLES;
@@ -185,6 +249,7 @@ void WindowMeshRenderer::render(KWin::EffectWindow* w, const QVector<WindowQuad>
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     texture->bind();
+    texture->generateMipmaps();
     vbo->draw(clipRegion, primitiveType, 0, verticesPerQuad * quads.count(), true);
 
     glDisable(GL_BLEND);
