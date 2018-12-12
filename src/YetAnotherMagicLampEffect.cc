@@ -141,35 +141,6 @@ void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, i
     KWin::effects->prePaintScreen(data, time);
 }
 
-void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time)
-{
-    auto modelIt = m_models.constFind(w);
-    if (modelIt != m_models.constEnd()) {
-        w->enablePainting(KWin::EffectWindow::PAINT_DISABLED_BY_MINIMIZE);
-    }
-
-    KWin::effects->prePaintWindow(w, data, time);
-}
-
-void YetAnotherMagicLampEffect::paintWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data)
-{
-    auto modelIt = m_models.constFind(w);
-    if (modelIt == m_models.constEnd()) {
-        KWin::effects->paintWindow(w, mask, region, data);
-        return;
-    }
-
-    QVector<WindowQuad> quads = m_meshRenderer->makeGrid(w, m_gridResolution);
-    (*modelIt).apply(quads);
-
-    if ((*modelIt).needsClip()) {
-        region = (*modelIt).clipRegion();
-    }
-
-    KWin::GLTexture* texture = m_offscreenRenderer->render(w);
-    m_meshRenderer->render(w, quads, texture, region);
-}
-
 void YetAnotherMagicLampEffect::postPaintScreen()
 {
     auto modelIt = m_models.begin();
@@ -186,6 +157,35 @@ void YetAnotherMagicLampEffect::postPaintScreen()
     KWin::effects->addRepaintFull();
 
     KWin::effects->postPaintScreen();
+}
+
+void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time)
+{
+    auto modelIt = m_models.constFind(w);
+    if (modelIt != m_models.constEnd()) {
+        w->enablePainting(KWin::EffectWindow::PAINT_DISABLED_BY_MINIMIZE);
+    }
+
+    KWin::effects->prePaintWindow(w, data, time);
+}
+
+void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data)
+{
+    auto modelIt = m_models.constFind(w);
+    if (modelIt == m_models.constEnd()) {
+        KWin::effects->drawWindow(w, mask, region, data);
+        return;
+    }
+
+    QVector<WindowQuad> quads = m_meshRenderer->makeGrid(w, m_gridResolution);
+    (*modelIt).apply(quads);
+
+    if ((*modelIt).needsClip()) {
+        region = (*modelIt).clipRegion();
+    }
+
+    KWin::GLTexture* texture = m_offscreenRenderer->render(w);
+    m_meshRenderer->render(w, quads, texture, region);
 }
 
 bool YetAnotherMagicLampEffect::isActive() const
@@ -253,9 +253,7 @@ void YetAnotherMagicLampEffect::slotWindowDeleted(KWin::EffectWindow* w)
 
 void YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged()
 {
-    if (KWin::effects->activeFullScreenEffect() == nullptr) {
-        return;
+    if (KWin::effects->activeFullScreenEffect() != nullptr) {
+        m_models.clear();
     }
-
-    m_models.clear();
 }
