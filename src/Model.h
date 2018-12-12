@@ -112,11 +112,6 @@ public:
      **/
     QRegion clipRegion() const;
 
-    /**
-     * Returns a region that has to be repainted by compositor.
-     **/
-    QRegion dirtyRegion() const;
-
 private:
     void applyBump(QVector<WindowQuad>& quads) const;
     void applyStretch1(QVector<WindowQuad>& quads) const;

@@ -134,6 +134,8 @@ void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, i
         ++modelIt;
     }
 
+    data.mask |= PAINT_SCREEN_WITH_TRANSFORMED_WINDOWS;
+
     KWin::effects->prePaintScreen(data, time);
 }
 
@@ -141,7 +143,6 @@ void YetAnotherMagicLampEffect::postPaintScreen()
 {
     auto modelIt = m_models.begin();
     while (modelIt != m_models.end()) {
-        KWin::effects->addRepaint((*modelIt).dirtyRegion());
         if ((*modelIt).done()) {
             m_offscreenRenderer->unregisterWindow(modelIt.key());
             modelIt = m_models.erase(modelIt);
@@ -149,6 +150,9 @@ void YetAnotherMagicLampEffect::postPaintScreen()
             ++modelIt;
         }
     }
+
+    // TODO: Don't do full repaints.
+    KWin::effects->addRepaintFull();
 
     KWin::effects->postPaintScreen();
 }
@@ -158,7 +162,6 @@ void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::Wind
     auto modelIt = m_models.constFind(w);
     if (modelIt != m_models.constEnd()) {
         w->enablePainting(KWin::EffectWindow::PAINT_DISABLED_BY_MINIMIZE);
-        data.setTransformed();
     }
 
     KWin::effects->prePaintWindow(w, data, time);
