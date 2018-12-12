@@ -100,18 +100,18 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
         curve.setType(QEasingCurve::InOutBounce);
         break;
 
-    case ShapeCurve::Bezier: {
+    case ShapeCurve::Bezier:
+    default:
+        // With the cubic bezier curve, "0" corresponds to the furtherst edge
+        // of a window, "1" corresponds to the closest edge.
         curve.setType(QEasingCurve::BezierSpline);
         const QPointF c1(0.45, 0.1);
         const QPointF c2(0.5, 1.0);
         const QPointF end(1.0, 1.0);
-        curve.addCubicBezierSegment(c1, c2, end);
-        break;
-    }
-
-    default:
-        // Fallback to the sine curve.
-        curve.setType(QEasingCurve::InOutSine);
+        curve.addCubicBezierSegment(
+            QPointF(0.45, 0.1),
+            QPointF(0.5, 1.0),
+            QPointF(1.0, 1.0));
         break;
     }
     m_modelParameters.shapeCurve = curve;
