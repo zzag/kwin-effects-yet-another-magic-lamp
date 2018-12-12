@@ -57,7 +57,7 @@ private:
 
 class WindowQuad {
 public:
-    // Compiler generated default constructors are fine.
+    // Compiler generated constructors are fine.
 
     WindowVertex& operator[](int index)
     {
