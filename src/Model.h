@@ -18,11 +18,12 @@
 #pragma once
 
 // own
-#include "WindowQuad.h"
 #include "common.h"
 
 // kwineffects
 #include <kwineffects.h>
+
+class WindowQuad;
 
 /**
  *

@@ -17,6 +17,7 @@
 
 // Own
 #include "YetAnotherMagicLampEffect.h"
+#include "Model.h"
 #include "OffscreenRenderer.h"
 #include "WindowMeshRenderer.h"
 

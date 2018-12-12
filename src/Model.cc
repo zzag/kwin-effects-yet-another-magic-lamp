@@ -17,6 +17,7 @@
 
 // own
 #include "Model.h"
+#include "WindowQuad.h"
 
 static inline std::chrono::milliseconds durationFraction(std::chrono::milliseconds duration, qreal fraction)
 {
