@@ -15,6 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Own
 #include "YetAnotherMagicLampEffect.h"
 
 KWIN_EFFECT_FACTORY_ENABLED(YetAnotherMagicLampEffectFactory,

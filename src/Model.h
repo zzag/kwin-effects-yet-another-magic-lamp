@@ -17,7 +17,7 @@
 
 #pragma once
 
-// own
+// Own
 #include "common.h"
 
 // kwineffects

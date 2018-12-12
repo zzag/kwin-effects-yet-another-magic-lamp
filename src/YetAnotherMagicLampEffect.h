@@ -17,7 +17,7 @@
 
 #pragma once
 
-// own
+// Own
 #include "Model.h"
 #include "common.h"
 
