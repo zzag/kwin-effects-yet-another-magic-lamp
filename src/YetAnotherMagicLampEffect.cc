@@ -102,7 +102,7 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
 
     case ShapeCurve::Bezier: {
         curve.setType(QEasingCurve::BezierSpline);
-        const QPointF c1(0.5, 0.0);
+        const QPointF c1(0.45, 0.1);
         const QPointF c2(0.5, 1.0);
         const QPointF end(1.0, 1.0);
         curve.addCubicBezierSegment(c1, c2, end);
@@ -116,9 +116,9 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
     }
     m_modelParameters.shapeCurve = curve;
 
-    const int baseDuration = animationTime<YetAnotherMagicLampConfig>(250);
+    const int baseDuration = animationTime<YetAnotherMagicLampConfig>(300);
     m_modelParameters.squashDuration = std::chrono::milliseconds(baseDuration);
-    m_modelParameters.stretchDuration = std::chrono::milliseconds(qMax(qRound(baseDuration * 0.5), 1));
+    m_modelParameters.stretchDuration = std::chrono::milliseconds(qMax(qRound(baseDuration * 0.7), 1));
     m_modelParameters.bumpDuration = std::chrono::milliseconds(baseDuration);
     m_modelParameters.shapeFactor = YetAnotherMagicLampConfig::initialShapeFactor();
     m_modelParameters.bumpDistance = YetAnotherMagicLampConfig::maxBumpDistance();
