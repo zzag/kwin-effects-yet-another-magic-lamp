@@ -3,7 +3,7 @@ project (kwin-effects-yaml)
 
 include (FeatureSummary)
 
-add_definitions (-Wall -Werror)
+add_definitions (-Wall)
 set (CMAKE_CXX_STANDARD 14)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
