@@ -87,12 +87,14 @@ public:
     void setParameters(const Parameters& parameters);
 
     /**
-     *
+     * Returns the associated window.
      **/
     KWin::EffectWindow* window() const;
 
     /**
+     * Sets the associated window.
      *
+     * @param window The window associated with this model.
      **/
     void setWindow(KWin::EffectWindow* window);
 
