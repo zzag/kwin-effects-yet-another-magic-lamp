@@ -49,12 +49,14 @@ public:
     };
 
     /**
+     * Starts animation with the given kind.
      *
+     * @param kind Kind of the animation (minimize or unminimize).
      **/
     void start(AnimationKind kind);
 
     /**
-     *
+     * Updates the model by @p delta milliseconds.
      **/
     void step(std::chrono::milliseconds delta);
 
@@ -64,7 +66,10 @@ public:
     bool done() const;
 
     /**
+     * Applies the current state of the model to the given list of
+     * window quads.
      *
+     * @param quadds The list of window quads to be transformed.
      **/
     void apply(QVector<WindowQuad>& quads) const;
 
