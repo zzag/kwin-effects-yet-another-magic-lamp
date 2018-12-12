@@ -69,12 +69,14 @@ public:
     void apply(QVector<WindowQuad>& quads) const;
 
     /**
-     *
+     * Returns the parameters of the model.
      **/
     Parameters parameters() const;
 
     /**
+     * Sets parameters of the model.
      *
+     * @param parameters The new paramaters.
      **/
     void setParameters(const Parameters& parameters);
 
@@ -89,12 +91,16 @@ public:
     void setWindow(KWin::EffectWindow* window);
 
     /**
+     * Returns whether the painted result has to be clipped.
      *
+     * @see clipRegion
      **/
     bool needsClip() const;
 
     /**
+     * Returns the clip region.
      *
+     * @see needsClip
      **/
     QRegion clipRegion() const;
 
