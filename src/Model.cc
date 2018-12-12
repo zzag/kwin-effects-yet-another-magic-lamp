@@ -497,6 +497,42 @@ QRegion Model::clipRegion() const
     return clipRect;
 }
 
+QRegion Model::dirtyRegion() const
+{
+    if (m_clip) {
+        return clipRegion();
+    }
+
+    QRect dirtyRect = QRegion(m_window->expandedGeometry())
+                          .united(m_window->iconGeometry())
+                          .boundingRect();
+
+    if (m_bumpDistance) {
+        switch (m_direction) {
+        case Direction::Left:
+            dirtyRect.setRight(dirtyRect.right() + m_bumpDistance);
+            break;
+
+        case Direction::Top:
+            dirtyRect.setBottom(dirtyRect.bottom() + m_bumpDistance);
+            break;
+
+        case Direction::Right:
+            dirtyRect.setLeft(dirtyRect.left() - m_bumpDistance);
+            break;
+
+        case Direction::Bottom:
+            dirtyRect.setTop(dirtyRect.top() - m_bumpDistance);
+            break;
+
+        default:
+            Q_UNREACHABLE();
+        }
+    }
+
+    return dirtyRect;
+}
+
 Direction Model::findDirectionToIcon() const
 {
     const QRect iconRect = m_window->iconGeometry();
