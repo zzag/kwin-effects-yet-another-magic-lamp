@@ -149,9 +149,7 @@ void YetAnotherMagicLampEffect::postPaintScreen()
         }
     }
 
-    // TODO: Don't do full repaints.
     KWin::effects->addRepaintFull();
-
     KWin::effects->postPaintScreen();
 }
 
