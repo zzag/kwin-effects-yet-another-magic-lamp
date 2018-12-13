@@ -128,10 +128,8 @@ void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, i
 {
     const std::chrono::milliseconds delta(time);
 
-    auto modelIt = m_models.begin();
-    while (modelIt != m_models.end()) {
-        (*modelIt).step(delta);
-        ++modelIt;
+    for (Model& model : m_models) {
+        model.step(delta);
     }
 
     data.mask |= PAINT_SCREEN_WITH_TRANSFORMED_WINDOWS;
