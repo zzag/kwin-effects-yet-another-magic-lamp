@@ -171,6 +171,7 @@ void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, QReg
         return;
     }
 
+    KWin::GLTexture* texture = m_offscreenRenderer->render(w);
     QVector<WindowQuad> quads = m_meshRenderer->makeGrid(w, m_gridResolution);
     (*modelIt).apply(quads);
 
@@ -178,7 +179,6 @@ void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, QReg
         region = (*modelIt).clipRegion();
     }
 
-    KWin::GLTexture* texture = m_offscreenRenderer->render(w);
     m_meshRenderer->render(w, quads, texture, region);
 }
 
