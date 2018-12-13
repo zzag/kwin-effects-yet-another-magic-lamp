@@ -96,8 +96,6 @@ QVector<WindowQuad> WindowMeshRenderer::makeGrid(const KWin::EffectWindow* w, in
         v += dv;
     }
 
-    // TODO: Build quads.
-
     return quads;
 }
 
