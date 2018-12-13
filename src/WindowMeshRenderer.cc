@@ -245,6 +245,7 @@ void WindowMeshRenderer::render(KWin::EffectWindow* w, const QVector<WindowQuad>
 
     vbo->bindArrays();
 
+    glEnable(GL_SCISSOR_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -253,6 +254,7 @@ void WindowMeshRenderer::render(KWin::EffectWindow* w, const QVector<WindowQuad>
     vbo->draw(clipRegion, primitiveType, 0, verticesPerQuad * quads.count(), true);
 
     glDisable(GL_BLEND);
+    glDisable(GL_SCISSOR_TEST);
 
     vbo->unbindArrays();
 
