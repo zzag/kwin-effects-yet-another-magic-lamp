@@ -26,16 +26,27 @@
 class WindowQuad;
 
 /**
- *
+ * Model for the magic lamp animation.
  **/
 class Model {
 public:
     struct Parameters {
+        // The duration of the squash stage.
         std::chrono::milliseconds squashDuration;
+
+        // The duration of the stretch stage.
         std::chrono::milliseconds stretchDuration;
+
+        // How long it takes to raise the window.
         std::chrono::milliseconds bumpDuration;
+
+        // Defines shape of transformed windows.
         QEasingCurve shapeCurve;
+
+        // The blend factor between Squash and Stretch stage.
         qreal shapeFactor;
+
+        // How much the transformed window should be raised.
         int bumpDistance;
     };
 
