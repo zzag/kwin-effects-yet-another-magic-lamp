@@ -52,3 +52,8 @@ cmake .. \
 make
 sudo make install
 ```
+
+### Using the effect
+
+Go to System Settings > Desktop Behavior > Desktop Effects, and select
+"Yet Another Magic Lamp", then click Apply.
