@@ -57,7 +57,7 @@ private:
     Model::Parameters m_modelParameters;
     int m_gridResolution;
 
-    QHash<KWin::EffectWindow*, Model> m_models;
+    QMap<KWin::EffectWindow*, Model> m_models;
     OffscreenRenderer* m_offscreenRenderer;
     WindowMeshRenderer* m_meshRenderer;
 };
