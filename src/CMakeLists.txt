@@ -11,7 +11,12 @@ find_package (KF5 REQUIRED COMPONENTS
     WindowSystem
 )
 
-find_package (KWinEffects REQUIRED)
+find_package (KWinEffects REQUIRED COMPONENTS
+    Core
+    OpenGL
+)
+
+find_package (epoxy REQUIRED)
 
 add_subdirectory (kcm)
 
@@ -28,6 +33,7 @@ kconfig_add_kcfg_files (effect_SRCS
     YetAnotherMagicLampConfig.kcfgc
 )
 
+include_directories (${epoxy_INCLUDE_DIR})
 add_library (kwin4_effect_yaml SHARED ${effect_SRCS})
 
 target_link_libraries (kwin4_effect_yaml
@@ -38,7 +44,9 @@ target_link_libraries (kwin4_effect_yaml
         KF5::ConfigGui
         KF5::CoreAddons
         KF5::WindowSystem
-        KWinEffects::KWinEffects
+        KWinEffects::Core
+        KWinEffects::OpenGL
+        ${epoxy_LIBRARY}
 )
 
 install (

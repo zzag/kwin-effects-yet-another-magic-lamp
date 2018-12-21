@@ -3,7 +3,6 @@ project (kwin-effects-yaml)
 
 include (FeatureSummary)
 
-add_definitions (-Wall)
 set (CMAKE_CXX_STANDARD 14)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
@@ -19,6 +18,7 @@ set (CMAKE_MODULE_PATH
 
 include (KDEInstallDirs)
 include (KDECMakeSettings)
+include (KDECompilerSettings NO_POLICY_SCOPE)
 
 add_subdirectory (src)
 
