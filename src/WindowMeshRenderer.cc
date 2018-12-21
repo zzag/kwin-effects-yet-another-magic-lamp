@@ -100,9 +100,8 @@ QVector<WindowQuad> WindowMeshRenderer::makeGrid(const KWin::EffectWindow* w, in
 }
 
 // Copied from libkwineffects.
-static void uploadQuads(KWin::GLVertexBuffer* vbo, GLenum primitiveType,
-    const QVector<WindowQuad>& quads, const QMatrix4x4& textureMatrix,
-    KWin::GLVertex2D* out)
+static void uploadQuads(GLenum primitiveType, const QVector<WindowQuad>& quads,
+    const QMatrix4x4& textureMatrix, KWin::GLVertex2D* out)
 {
     // Since we know that the texture matrix just scales and translates
     // we can use this information to optimize the transformation.
@@ -238,7 +237,7 @@ void WindowMeshRenderer::render(KWin::EffectWindow* w, const QVector<WindowQuad>
 
     KWin::GLVertexBuffer* vbo = KWin::GLVertexBuffer::streamingBuffer();
     auto map = static_cast<KWin::GLVertex2D*>(vbo->map(vboSize));
-    uploadQuads(vbo, primitiveType, quads, texture->matrix(KWin::NormalizedCoordinates), map);
+    uploadQuads(primitiveType, quads, texture->matrix(KWin::NormalizedCoordinates), map);
     vbo->unmap();
 
     vbo->bindArrays();
