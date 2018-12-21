@@ -248,6 +248,7 @@ void YetAnotherMagicLampEffect::slotWindowDeleted(KWin::EffectWindow* w)
 void YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged()
 {
     if (KWin::effects->activeFullScreenEffect() != nullptr) {
+        m_offscreenRenderer->unregisterAllWindows();
         m_models.clear();
     }
 }

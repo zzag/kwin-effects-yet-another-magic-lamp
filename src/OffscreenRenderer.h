@@ -47,6 +47,11 @@ public:
     void unregisterWindow(KWin::EffectWindow* w);
 
     /**
+     * Frees rendering resources for all windows.
+     **/
+    void unregisterAllWindows();
+
+    /**
      * Renders the given window into an offscreen texture.
      **/
     KWin::GLTexture* render(KWin::EffectWindow* w);

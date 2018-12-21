@@ -32,10 +32,7 @@ OffscreenRenderer::OffscreenRenderer(QObject* parent)
 
 OffscreenRenderer::~OffscreenRenderer()
 {
-    const auto windows = m_renderResources.keys();
-    for (KWin::EffectWindow* window : windows) {
-        unregisterWindow(window);
-    }
+    unregisterAllWindows();
 }
 
 void OffscreenRenderer::registerWindow(KWin::EffectWindow* w)
@@ -59,6 +56,14 @@ void OffscreenRenderer::unregisterWindow(KWin::EffectWindow* w)
 
     freeRenderResources(*it);
     m_renderResources.erase(it);
+}
+
+void OffscreenRenderer::unregisterAllWindows()
+{
+    const auto windows = m_renderResources.keys();
+    for (KWin::EffectWindow* window : windows) {
+        unregisterWindow(window);
+    }
 }
 
 KWin::GLTexture* OffscreenRenderer::render(KWin::EffectWindow* w)
