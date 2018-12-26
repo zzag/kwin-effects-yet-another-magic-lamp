@@ -4,6 +4,15 @@
 
 [Demo](https://www.youtube.com/watch?v=BR4bUwFZDS8)
 
+YAML is a window minimize animation for KWin. Whenever a window is minimized,
+it'll get sucked down into the dock/panel. The main difference between this
+effect and the one shipped with KWin is that this effect is more "curvy". In addition to that, YAML works correctly with weird setups (e.g. the panel is
+between screens) and has more configuration options.
+
+This is mostly eye-candy stuff. If you want to be more productive, maybe the
+Squash or the [Scale](https://store.kde.org/p/1267839/) effect will fit better
+your taste.
+
 ### Installation
 
 #### Build from source
