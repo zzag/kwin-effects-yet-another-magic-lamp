@@ -249,6 +249,7 @@ void WindowMeshRenderer::render(KWin::EffectWindow* w, const QVector<WindowQuad>
     texture->bind();
     texture->generateMipmaps();
     vbo->draw(clipRegion, primitiveType, 0, verticesPerQuad * quads.count(), true);
+    texture->unbind();
 
     glDisable(GL_BLEND);
     glDisable(GL_SCISSOR_TEST);
