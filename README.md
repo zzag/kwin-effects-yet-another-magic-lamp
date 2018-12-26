@@ -57,3 +57,10 @@ sudo make install
 
 Go to System Settings > Desktop Behavior > Desktop Effects, and select
 "Yet Another Magic Lamp", then click Apply.
+
+### Contributing
+
+Any help is welcome. If you have suggestions how to improve this effect(e.g.
+different duration for each stage of the animation, etc), please create a new
+issue. If you'd like to contribute by implementing some feature, make sure
+you've run clang-format before creating a PR.
