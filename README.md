@@ -10,9 +10,8 @@ effect and the one shipped with KWin is that this effect is more "curvy". In
 addition to that, YAML works correctly with weird setups (e.g. the panel is
 between screens) and has more configuration options.
 
-This is mostly eye-candy stuff. If you want to be more productive, maybe the
-Squash or the [Scale Minimize Animation](https://store.kde.org/p/1267839/)
-effect will fit better your taste.
+This is mostly eye-candy stuff. If you want to be more productive, consider
+using another window minimize animation (e.g. [Scale](https://store.kde.org/p/1267839/), etc).
 
 ### Installation
 
