@@ -37,16 +37,15 @@ include_directories (${epoxy_INCLUDE_DIR})
 add_library (kwin4_effect_yaml SHARED ${effect_SRCS})
 
 target_link_libraries (kwin4_effect_yaml
-    PUBLIC
-        Qt5::Core
-        Qt5::Gui
-        KF5::ConfigCore
-        KF5::ConfigGui
-        KF5::CoreAddons
-        KF5::WindowSystem
-        KWinEffects::Core
-        KWinEffects::OpenGL
-        ${epoxy_LIBRARY}
+    Qt5::Core
+    Qt5::Gui
+    KF5::ConfigCore
+    KF5::ConfigGui
+    KF5::CoreAddons
+    KF5::WindowSystem
+    KWinEffects::Core
+    KWinEffects::OpenGL
+    ${epoxy_LIBRARY}
 )
 
 install (
