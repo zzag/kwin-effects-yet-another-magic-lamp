@@ -23,6 +23,10 @@
 // kwineffects
 #include <kwineffects.h>
 
+#if KWIN_EFFECT_API_VERSION < KWIN_EFFECT_API_MAKE_VERSION(0, 226)
+#include "hacks/TimeLine.h"
+#endif
+
 class WindowQuad;
 
 /**

@@ -49,8 +49,10 @@ YetAnotherMagicLampEffect::YetAnotherMagicLampEffect()
         this, &YetAnotherMagicLampEffect::slotWindowUnminimized);
     connect(KWin::effects, &KWin::EffectsHandler::windowDeleted,
         this, &YetAnotherMagicLampEffect::slotWindowDeleted);
+#if KWIN_EFFECT_API_VERSION >= KWIN_EFFECT_API_MAKE_VERSION(0, 226)
     connect(KWin::effects, &KWin::EffectsHandler::activeFullScreenEffectChanged,
         this, &YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged);
+#endif
 
     m_offscreenRenderer = new OffscreenRenderer(this);
     m_meshRenderer = new WindowMeshRenderer(this);
