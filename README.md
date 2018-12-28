@@ -1,14 +1,14 @@
-# Yet Another Magic Lamp (YAML)
+# Yet Another Magic Lamp
 
 ![Screenshot](doc/Screenshot.png)
 
 [Demo](https://www.youtube.com/watch?v=BR4bUwFZDS8)
 
-YAML is a window minimize animation for KWin. Whenever a window is minimized,
-it'll get sucked down into the dock/panel. The main difference between this
-effect and the one shipped with KWin is that this effect is more "curvy". In
-addition to that, YAML works correctly with weird setups (e.g. the panel is
-between screens) and has more configuration options.
+Yet Another Magic Lamp is window minimization effect for KWin. Whenever a window
+is minimized, it'll get sucked down into the dock/panel. The main difference
+between this effect and the one shipped with KWin is that this effect is more
+"curvy". In addition to that, this effect works correctly with weird setups
+(e.g. the panel is between screens) and has more configuration options.
 
 This is mostly eye-candy stuff. If you want to be more productive, consider
 using another window minimize animation (e.g. [Scale](https://store.kde.org/p/1267839/), etc).
