@@ -4,7 +4,7 @@
 
 [Demo](https://www.youtube.com/watch?v=BR4bUwFZDS8)
 
-Yet Another Magic Lamp is window minimization effect for KWin. Whenever a window
+Yet Another Magic Lamp is a window minimization effect for KWin. Whenever a window
 is minimized, it'll get sucked down into the dock/panel. The main difference
 between this effect and the one shipped with KWin is that this effect is more
 "curvy". In addition to that, this effect works correctly with weird setups
