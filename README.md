@@ -1,4 +1,4 @@
-# YAML (Yet Another Magic Lamp)
+# Yet Another Magic Lamp (YAML)
 
 ![Screenshot](doc/Screenshot.png)
 
