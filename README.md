@@ -54,7 +54,7 @@ After you installed all the required dependencies, you can build
 the effect:
 
 ```sh
-git clone https://github.com/zzag/kwin-effects-yaml.git
+git clone https://github.com/zzag/kwin-effects-yet-another-magic-lamp.git
 mkdir build && cd build
 cmake .. \
     -DCMAKE_BUILD_TYPE=Release \

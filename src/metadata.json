@@ -9,8 +9,8 @@
         "Category": "Appearance",
         "Description": "Alternative magic lamp effect",
         "EnabledByDefault": false,
-        "Icon": "preferences-system-windows-effect-yaml",
-        "Id": "kwin4_effect_yaml",
+        "Icon": "preferences-system-windows-effect-yetanothermagiclamp",
+        "Id": "kwin4_effect_yetanothermagiclamp",
         "License": "GPL",
         "Name": "Yet Another Magic Lamp",
         "ServiceTypes": [

@@ -34,9 +34,9 @@ kconfig_add_kcfg_files (effect_SRCS
 )
 
 include_directories (${epoxy_INCLUDE_DIR})
-add_library (kwin4_effect_yaml SHARED ${effect_SRCS})
+add_library (kwin4_effect_yetanothermagiclamp SHARED ${effect_SRCS})
 
-target_link_libraries (kwin4_effect_yaml
+target_link_libraries (kwin4_effect_yetanothermagiclamp
     Qt5::Core
     Qt5::Gui
     KF5::ConfigCore
@@ -50,7 +50,7 @@ target_link_libraries (kwin4_effect_yaml
 
 install (
     TARGETS
-        kwin4_effect_yaml
+        kwin4_effect_yetanothermagiclamp
 
     DESTINATION
         ${PLUGIN_INSTALL_DIR}/kwin/effects/plugins/
