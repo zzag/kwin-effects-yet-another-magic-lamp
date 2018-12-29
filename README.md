@@ -15,6 +15,15 @@ using another window minimize animation (e.g. [Scale](https://store.kde.org/p/12
 
 ### Installation
 
+#### Binary package
+
+On openSUSE Tumbleweed
+
+```sh
+sudo zypper ar obs://home:trmdi trmdi
+sudo zypper in -r trmdi kwin-effects-yaml
+```
+
 #### Build from source
 
 You will need the following dependencies to build this effect:
@@ -63,7 +72,7 @@ make
 sudo make install
 ```
 
-#### Using the effect
+### Using the effect
 
 Go to System Settings > Desktop Behavior > Desktop Effects, and select
 "Yet Another Magic Lamp", then click Apply.
