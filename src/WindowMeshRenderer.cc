@@ -244,7 +244,7 @@ void WindowMeshRenderer::render(KWin::EffectWindow* w, const QVector<WindowQuad>
 
     glEnable(GL_SCISSOR_TEST);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     texture->bind();
     texture->generateMipmaps();
