@@ -26,7 +26,7 @@
 #include <KAboutData>
 
 YetAnotherMagicLampEffectKCM::YetAnotherMagicLampEffectKCM(QWidget* parent, const QVariantList& args)
-    : KCModule(KAboutData::pluginData(QStringLiteral("kwin4_effect_yaml")), parent, args)
+    : KCModule(KAboutData::pluginData(QStringLiteral("kwin4_effect_yetanothermagiclamp")), parent, args)
     , m_ui(new Ui::YetAnotherMagicLampEffectKCM)
 {
     m_ui->setupUi(this);
@@ -45,5 +45,5 @@ void YetAnotherMagicLampEffectKCM::save()
     OrgKdeKwinEffectsInterface interface(QStringLiteral("org.kde.KWin"),
         QStringLiteral("/Effects"),
         QDBusConnection::sessionBus());
-    interface.reconfigureEffect(QStringLiteral("kwin4_effect_yaml"));
+    interface.reconfigureEffect(QStringLiteral("kwin4_effect_yetanothermagiclamp"));
 }
