@@ -109,8 +109,8 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
         // of a window, "1" corresponds to the closest edge.
         curve.setType(QEasingCurve::BezierSpline);
         curve.addCubicBezierSegment(
-            QPointF(0.45, 0.1),
-            QPointF(0.5, 1.0),
+            QPointF(0.3, 0.0),
+            QPointF(0.7, 1.0),
             QPointF(1.0, 1.0));
         break;
     }
