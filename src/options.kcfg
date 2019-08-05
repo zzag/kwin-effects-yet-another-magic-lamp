@@ -20,7 +20,7 @@
             <max>1.0</max>
         </entry>
         <entry name="ShapeCurve" type="Int">
-            <default>8</default>
+            <default>5</default>
         </entry>
     </group>
 </kcfg>
