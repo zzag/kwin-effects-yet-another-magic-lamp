@@ -287,8 +287,6 @@ struct TransformParameters {
     qreal squashProgress;
     qreal bumpProgress;
     qreal bumpDistance;
-    QRect windowRect;
-    QRect iconRect;
 };
 
 static inline qreal interpolate(qreal from, qreal to, qreal t)
@@ -296,12 +294,17 @@ static inline qreal interpolate(qreal from, qreal to, qreal t)
     return from * (1.0 - t) + to * t;
 }
 
-template <typename Collection>
-static void transformQuadsLeft(const TransformParameters& params, Collection& quads)
+static void transformQuadsLeft(
+    const KWin::EffectWindow* window,
+    const TransformParameters& params,
+    QVector<WindowQuad>& quads)
 {
     // FIXME: Have a generic function that transforms window quads.
 
-    const qreal distance = params.windowRect.right() - params.iconRect.right() + params.bumpDistance;
+    const QRect iconRect = window->iconGeometry();
+    const QRect windowRect = window->geometry();
+
+    const qreal distance = windowRect.right() - iconRect.right() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
         WindowQuad& quad = quads[i];
@@ -309,18 +312,18 @@ static void transformQuadsLeft(const TransformParameters& params, Collection& qu
         const qreal leftOffset = quad[0].x() - interpolate(0.0, distance, params.squashProgress);
         const qreal rightOffset = quad[2].x() - interpolate(0.0, distance, params.squashProgress);
 
-        const qreal leftScale = params.stretchProgress * params.shapeCurve.valueForProgress((params.windowRect.width() - leftOffset) / distance);
-        const qreal rightScale = params.stretchProgress * params.shapeCurve.valueForProgress((params.windowRect.width() - rightOffset) / distance);
+        const qreal leftScale = params.stretchProgress * params.shapeCurve.valueForProgress((windowRect.width() - leftOffset) / distance);
+        const qreal rightScale = params.stretchProgress * params.shapeCurve.valueForProgress((windowRect.width() - rightOffset) / distance);
 
-        const qreal targetTopLeftY = params.iconRect.y() + params.iconRect.height() * quad[0].y() / params.windowRect.height();
-        const qreal targetTopRightY = params.iconRect.y() + params.iconRect.height() * quad[1].y() / params.windowRect.height();
-        const qreal targetBottomRightY = params.iconRect.y() + params.iconRect.height() * quad[2].y() / params.windowRect.height();
-        const qreal targetBottomLeftY = params.iconRect.y() + params.iconRect.height() * quad[3].y() / params.windowRect.height();
+        const qreal targetTopLeftY = iconRect.y() + iconRect.height() * quad[0].y() / windowRect.height();
+        const qreal targetTopRightY = iconRect.y() + iconRect.height() * quad[1].y() / windowRect.height();
+        const qreal targetBottomRightY = iconRect.y() + iconRect.height() * quad[2].y() / windowRect.height();
+        const qreal targetBottomLeftY = iconRect.y() + iconRect.height() * quad[3].y() / windowRect.height();
 
-        quad[0].setY(quad[0].y() + leftScale * (targetTopLeftY - (params.windowRect.y() + quad[0].y())));
-        quad[3].setY(quad[3].y() + leftScale * (targetBottomLeftY - (params.windowRect.y() + quad[3].y())));
-        quad[1].setY(quad[1].y() + rightScale * (targetTopRightY - (params.windowRect.y() + quad[1].y())));
-        quad[2].setY(quad[2].y() + rightScale * (targetBottomRightY - (params.windowRect.y() + quad[2].y())));
+        quad[0].setY(quad[0].y() + leftScale * (targetTopLeftY - (windowRect.y() + quad[0].y())));
+        quad[3].setY(quad[3].y() + leftScale * (targetBottomLeftY - (windowRect.y() + quad[3].y())));
+        quad[1].setY(quad[1].y() + rightScale * (targetTopRightY - (windowRect.y() + quad[1].y())));
+        quad[2].setY(quad[2].y() + rightScale * (targetBottomRightY - (windowRect.y() + quad[2].y())));
 
         const qreal targetLeftOffset = leftOffset + params.bumpDistance * params.bumpProgress;
         const qreal targetRightOffset = rightOffset + params.bumpDistance * params.bumpProgress;
@@ -332,12 +335,17 @@ static void transformQuadsLeft(const TransformParameters& params, Collection& qu
     }
 }
 
-template <typename Collection>
-static void transformQuadsTop(const TransformParameters& params, Collection& quads)
+static void transformQuadsTop(
+    const KWin::EffectWindow* window,
+    const TransformParameters& params,
+    QVector<WindowQuad>& quads)
 {
     // FIXME: Have a generic function that transforms window quads.
 
-    const qreal distance = params.windowRect.bottom() - params.iconRect.bottom() + params.bumpDistance;
+    const QRect iconRect = window->iconGeometry();
+    const QRect windowRect = window->geometry();
+
+    const qreal distance = windowRect.bottom() - iconRect.bottom() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
         WindowQuad& quad = quads[i];
@@ -345,18 +353,18 @@ static void transformQuadsTop(const TransformParameters& params, Collection& qua
         const qreal topOffset = quad[0].y() - interpolate(0.0, distance, params.squashProgress);
         const qreal bottomOffset = quad[2].y() - interpolate(0.0, distance, params.squashProgress);
 
-        const qreal topScale = params.stretchProgress * params.shapeCurve.valueForProgress((params.windowRect.height() - topOffset) / distance);
-        const qreal bottomScale = params.stretchProgress * params.shapeCurve.valueForProgress((params.windowRect.height() - bottomOffset) / distance);
+        const qreal topScale = params.stretchProgress * params.shapeCurve.valueForProgress((windowRect.height() - topOffset) / distance);
+        const qreal bottomScale = params.stretchProgress * params.shapeCurve.valueForProgress((windowRect.height() - bottomOffset) / distance);
 
-        const qreal targetTopLeftX = params.iconRect.x() + params.iconRect.width() * quad[0].x() / params.windowRect.width();
-        const qreal targetTopRightX = params.iconRect.x() + params.iconRect.width() * quad[1].x() / params.windowRect.width();
-        const qreal targetBottomRightX = params.iconRect.x() + params.iconRect.width() * quad[2].x() / params.windowRect.width();
-        const qreal targetBottomLeftX = params.iconRect.x() + params.iconRect.width() * quad[3].x() / params.windowRect.width();
+        const qreal targetTopLeftX = iconRect.x() + iconRect.width() * quad[0].x() / windowRect.width();
+        const qreal targetTopRightX = iconRect.x() + iconRect.width() * quad[1].x() / windowRect.width();
+        const qreal targetBottomRightX = iconRect.x() + iconRect.width() * quad[2].x() / windowRect.width();
+        const qreal targetBottomLeftX = iconRect.x() + iconRect.width() * quad[3].x() / windowRect.width();
 
-        quad[0].setX(quad[0].x() + topScale * (targetTopLeftX - (params.windowRect.x() + quad[0].x())));
-        quad[1].setX(quad[1].x() + topScale * (targetTopRightX - (params.windowRect.x() + quad[1].x())));
-        quad[2].setX(quad[2].x() + bottomScale * (targetBottomRightX - (params.windowRect.x() + quad[2].x())));
-        quad[3].setX(quad[3].x() + bottomScale * (targetBottomLeftX - (params.windowRect.x() + quad[3].x())));
+        quad[0].setX(quad[0].x() + topScale * (targetTopLeftX - (windowRect.x() + quad[0].x())));
+        quad[1].setX(quad[1].x() + topScale * (targetTopRightX - (windowRect.x() + quad[1].x())));
+        quad[2].setX(quad[2].x() + bottomScale * (targetBottomRightX - (windowRect.x() + quad[2].x())));
+        quad[3].setX(quad[3].x() + bottomScale * (targetBottomLeftX - (windowRect.x() + quad[3].x())));
 
         const qreal targetTopOffset = topOffset + params.bumpDistance * params.bumpProgress;
         const qreal targetBottomOffset = bottomOffset + params.bumpDistance * params.bumpProgress;
@@ -368,12 +376,17 @@ static void transformQuadsTop(const TransformParameters& params, Collection& qua
     }
 }
 
-template <typename Collection>
-static void transformQuadsRight(const TransformParameters& params, Collection& quads)
+static void transformQuadsRight(
+    const KWin::EffectWindow* window,
+    const TransformParameters& params,
+    QVector<WindowQuad>& quads)
 {
     // FIXME: Have a generic function that transforms window quads.
 
-    const qreal distance = params.iconRect.left() - params.windowRect.left() + params.bumpDistance;
+    const QRect iconRect = window->iconGeometry();
+    const QRect windowRect = window->geometry();
+
+    const qreal distance = iconRect.left() - windowRect.left() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
         WindowQuad& quad = quads[i];
@@ -384,15 +397,15 @@ static void transformQuadsRight(const TransformParameters& params, Collection& q
         const qreal leftScale = params.stretchProgress * params.shapeCurve.valueForProgress(leftOffset / distance);
         const qreal rightScale = params.stretchProgress * params.shapeCurve.valueForProgress(rightOffset / distance);
 
-        const qreal targetTopLeftY = params.iconRect.y() + params.iconRect.height() * quad[0].y() / params.windowRect.height();
-        const qreal targetTopRightY = params.iconRect.y() + params.iconRect.height() * quad[1].y() / params.windowRect.height();
-        const qreal targetBottomRightY = params.iconRect.y() + params.iconRect.height() * quad[2].y() / params.windowRect.height();
-        const qreal targetBottomLeftY = params.iconRect.y() + params.iconRect.height() * quad[3].y() / params.windowRect.height();
+        const qreal targetTopLeftY = iconRect.y() + iconRect.height() * quad[0].y() / windowRect.height();
+        const qreal targetTopRightY = iconRect.y() + iconRect.height() * quad[1].y() / windowRect.height();
+        const qreal targetBottomRightY = iconRect.y() + iconRect.height() * quad[2].y() / windowRect.height();
+        const qreal targetBottomLeftY = iconRect.y() + iconRect.height() * quad[3].y() / windowRect.height();
 
-        quad[0].setY(quad[0].y() + leftScale * (targetTopLeftY - (params.windowRect.y() + quad[0].y())));
-        quad[3].setY(quad[3].y() + leftScale * (targetBottomLeftY - (params.windowRect.y() + quad[3].y())));
-        quad[1].setY(quad[1].y() + rightScale * (targetTopRightY - (params.windowRect.y() + quad[1].y())));
-        quad[2].setY(quad[2].y() + rightScale * (targetBottomRightY - (params.windowRect.y() + quad[2].y())));
+        quad[0].setY(quad[0].y() + leftScale * (targetTopLeftY - (windowRect.y() + quad[0].y())));
+        quad[3].setY(quad[3].y() + leftScale * (targetBottomLeftY - (windowRect.y() + quad[3].y())));
+        quad[1].setY(quad[1].y() + rightScale * (targetTopRightY - (windowRect.y() + quad[1].y())));
+        quad[2].setY(quad[2].y() + rightScale * (targetBottomRightY - (windowRect.y() + quad[2].y())));
 
         const qreal targetLeftOffset = leftOffset - params.bumpDistance * params.bumpProgress;
         const qreal targetRightOffset = rightOffset - params.bumpDistance * params.bumpProgress;
@@ -404,12 +417,17 @@ static void transformQuadsRight(const TransformParameters& params, Collection& q
     }
 }
 
-template <typename Collection>
-static void transformQuadsBottom(const TransformParameters& params, Collection& quads)
+static void transformQuadsBottom(
+    const KWin::EffectWindow* window,
+    const TransformParameters& params,
+    QVector<WindowQuad>& quads)
 {
     // FIXME: Have a generic function that transforms window quads.
 
-    const qreal distance = params.iconRect.top() - params.windowRect.top() + params.bumpDistance;
+    const QRect iconRect = window->iconGeometry();
+    const QRect windowRect = window->geometry();
+
+    const qreal distance = iconRect.top() - windowRect.top() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
         WindowQuad& quad = quads[i];
@@ -420,15 +438,15 @@ static void transformQuadsBottom(const TransformParameters& params, Collection& 
         const qreal topScale = params.stretchProgress * params.shapeCurve.valueForProgress(topOffset / distance);
         const qreal bottomScale = params.stretchProgress * params.shapeCurve.valueForProgress(bottomOffset / distance);
 
-        const qreal targetTopLeftX = params.iconRect.x() + params.iconRect.width() * quad[0].x() / params.windowRect.width();
-        const qreal targetTopRightX = params.iconRect.x() + params.iconRect.width() * quad[1].x() / params.windowRect.width();
-        const qreal targetBottomRightX = params.iconRect.x() + params.iconRect.width() * quad[2].x() / params.windowRect.width();
-        const qreal targetBottomLeftX = params.iconRect.x() + params.iconRect.width() * quad[3].x() / params.windowRect.width();
+        const qreal targetTopLeftX = iconRect.x() + iconRect.width() * quad[0].x() / windowRect.width();
+        const qreal targetTopRightX = iconRect.x() + iconRect.width() * quad[1].x() / windowRect.width();
+        const qreal targetBottomRightX = iconRect.x() + iconRect.width() * quad[2].x() / windowRect.width();
+        const qreal targetBottomLeftX = iconRect.x() + iconRect.width() * quad[3].x() / windowRect.width();
 
-        quad[0].setX(quad[0].x() + topScale * (targetTopLeftX - (params.windowRect.x() + quad[0].x())));
-        quad[1].setX(quad[1].x() + topScale * (targetTopRightX - (params.windowRect.x() + quad[1].x())));
-        quad[2].setX(quad[2].x() + bottomScale * (targetBottomRightX - (params.windowRect.x() + quad[2].x())));
-        quad[3].setX(quad[3].x() + bottomScale * (targetBottomLeftX - (params.windowRect.x() + quad[3].x())));
+        quad[0].setX(quad[0].x() + topScale * (targetTopLeftX - (windowRect.x() + quad[0].x())));
+        quad[1].setX(quad[1].x() + topScale * (targetTopRightX - (windowRect.x() + quad[1].x())));
+        quad[2].setX(quad[2].x() + bottomScale * (targetBottomRightX - (windowRect.x() + quad[2].x())));
+        quad[3].setX(quad[3].x() + bottomScale * (targetBottomLeftX - (windowRect.x() + quad[3].x())));
 
         const qreal targetTopOffset = topOffset - params.bumpDistance * params.bumpProgress;
         const qreal targetBottomOffset = bottomOffset - params.bumpDistance * params.bumpProgress;
@@ -440,24 +458,26 @@ static void transformQuadsBottom(const TransformParameters& params, Collection& 
     }
 }
 
-template <typename Collection>
-static void transformQuads(const TransformParameters& params, Collection& quads)
+static void transformQuads(
+    const KWin::EffectWindow* window,
+    const TransformParameters& params,
+    QVector<WindowQuad>& quads)
 {
     switch (params.direction) {
     case Direction::Left:
-        transformQuadsLeft(params, quads);
+        transformQuadsLeft(window, params, quads);
         break;
 
     case Direction::Top:
-        transformQuadsTop(params, quads);
+        transformQuadsTop(window, params, quads);
         break;
 
     case Direction::Right:
-        transformQuadsRight(params, quads);
+        transformQuadsRight(window, params, quads);
         break;
 
     case Direction::Bottom:
-        transformQuadsBottom(params, quads);
+        transformQuadsBottom(window, params, quads);
         break;
 
     default:
@@ -495,9 +515,7 @@ void Model::applyBump(QVector<WindowQuad>& quads) const
     params.stretchProgress = 0.0;
     params.bumpProgress = m_timeLine.value();
     params.bumpDistance = m_bumpDistance;
-    params.windowRect = m_window->geometry();
-    params.iconRect = m_window->iconGeometry();
-    transformQuads(params, quads);
+    transformQuads(m_window, params, quads);
 }
 
 void Model::applyStretch1(QVector<WindowQuad>& quads) const
@@ -509,9 +527,7 @@ void Model::applyStretch1(QVector<WindowQuad>& quads) const
     params.stretchProgress = m_shapeFactor * m_timeLine.value();
     params.bumpProgress = 1.0;
     params.bumpDistance = m_bumpDistance;
-    params.windowRect = m_window->geometry();
-    params.iconRect = m_window->iconGeometry();
-    transformQuads(params, quads);
+    transformQuads(m_window, params, quads);
 }
 
 void Model::applyStretch2(QVector<WindowQuad>& quads) const
@@ -523,9 +539,7 @@ void Model::applyStretch2(QVector<WindowQuad>& quads) const
     params.stretchProgress = m_shapeFactor * m_timeLine.value();
     params.bumpProgress = params.stretchProgress;
     params.bumpDistance = m_bumpDistance;
-    params.windowRect = m_window->geometry();
-    params.iconRect = m_window->iconGeometry();
-    transformQuads(params, quads);
+    transformQuads(m_window, params, quads);
 }
 
 void Model::applySquash(QVector<WindowQuad>& quads) const
@@ -537,9 +551,7 @@ void Model::applySquash(QVector<WindowQuad>& quads) const
     params.stretchProgress = qMin(m_shapeFactor + params.squashProgress, 1.0);
     params.bumpProgress = 1.0;
     params.bumpDistance = m_bumpDistance;
-    params.windowRect = m_window->geometry();
-    params.iconRect = m_window->iconGeometry();
-    transformQuads(params, quads);
+    transformQuads(m_window, params, quads);
 }
 
 Model::Parameters Model::parameters() const
