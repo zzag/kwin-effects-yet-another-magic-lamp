@@ -29,6 +29,109 @@ Model::Model(KWin::EffectWindow* window)
 {
 }
 
+static KWin::EffectWindow* findDock(const KWin::EffectWindow* client)
+{
+    const KWin::EffectWindowList windows = KWin::effects->stackingOrder();
+
+    for (KWin::EffectWindow* window : windows) {
+        if (!window->isDock())
+            continue;
+
+        if (!client->geometry().intersects(window->iconGeometry()))
+            continue;
+
+        return window;
+    }
+
+    return nullptr;
+}
+
+static Direction realizeDirection(const KWin::EffectWindow* window)
+{
+    const KWin::EffectWindow* dock = findDock(window);
+
+    Direction direction;
+    QPoint screenDelta;
+
+    if (dock) {
+        const QRect screenRect = KWin::effects->clientArea(KWin::ScreenArea, dock);
+
+        if (dock->width() >= dock->height()) {
+            if (dock->y() == screenRect.y())
+                direction = Direction::Top;
+            else
+                direction = Direction::Bottom;
+        } else {
+            if (dock->x() == screenRect.x())
+                direction = Direction::Left;
+            else
+                direction = Direction::Right;
+        }
+
+        screenDelta += screenRect.center();
+    } else {
+        // Perhaps the dock is hidden, deduce direction to the icon.
+        const QRect iconRect = window->iconGeometry();
+
+        const int screen = KWin::effects->screenNumber(iconRect.center());
+        const int desktop = KWin::effects->currentDesktop();
+
+        const QRect screenRect = KWin::effects->clientArea(KWin::ScreenArea, screen, desktop);
+        const QRect constrainedRect = screenRect.intersected(iconRect);
+
+        if (constrainedRect.left() == screenRect.left())
+            direction = Direction::Left;
+        else if (constrainedRect.top() == screenRect.top())
+            direction = Direction::Top;
+        else if (constrainedRect.right() == screenRect.right())
+            direction = Direction::Right;
+        else
+            direction = Direction::Bottom;
+
+        screenDelta += screenRect.center();
+    }
+
+    const QRect screenRect = KWin::effects->clientArea(KWin::ScreenArea, window);
+    screenDelta -= screenRect.center();
+
+    // Dock and window are on the same screen, no further adjustments are required.
+    if (screenDelta.isNull())
+        return direction;
+
+    const int safetyMargin = 100;
+
+    switch (direction) {
+    case Direction::Top:
+    case Direction::Bottom:
+        // Approach the icon along horizontal direction.
+        if (qAbs(screenDelta.x()) - qAbs(screenDelta.y()) > safetyMargin)
+            return direction;
+
+        // Approach the icon from bottom.
+        if (screenDelta.y() < 0)
+            return Direction::Top;
+
+        // Approach the icon from top.
+        return Direction::Bottom;
+
+    case Direction::Left:
+    case Direction::Right:
+        // Approach the icon along vertical direction.
+        if (qAbs(screenDelta.y()) - qAbs(screenDelta.x()) > safetyMargin)
+            return direction;
+
+        // Approach the icon from right side.
+        if (screenDelta.x() < 0)
+            return Direction::Left;
+
+        // Approach the icon from left side.
+        return Direction::Right;
+
+    default:
+        Q_UNREACHABLE();
+    }
+}
+
 void Model::start(AnimationKind kind)
 {
     m_kind = kind;
@@ -38,7 +141,7 @@ void Model::start(AnimationKind kind)
         return;
     }
 
-    m_direction = findDirectionToIcon();
+    m_direction = realizeDirection(m_window);
     m_bumpDistance = computeBumpDistance();
     m_shapeFactor = computeShapeFactor();
 
@@ -503,69 +606,6 @@ QRegion Model::clipRegion() const
     }
 
     return clipRect;
-}
-
-Direction Model::findDirectionToIcon() const
-{
-    const QRect iconRect = m_window->iconGeometry();
-
-    const KWin::EffectWindowList windows = KWin::effects->stackingOrder();
-    auto panelIt = std::find_if(windows.constBegin(), windows.constEnd(),
-        [&iconRect](const KWin::EffectWindow* w) {
-            if (!w->isDock()) {
-                return false;
-            }
-            return w->geometry().intersects(iconRect);
-        });
-    const KWin::EffectWindow* panel = (panelIt != windows.constEnd())
-        ? (*panelIt)
-        : nullptr;
-
-    Direction direction;
-    if (panel != nullptr) {
-        const QRect panelScreen = KWin::effects->clientArea(KWin::ScreenArea, (*panelIt));
-        if (panel->width() >= panel->height()) {
-            direction = (panel->y() == panelScreen.y())
-                ? Direction::Top
-                : Direction::Bottom;
-        } else {
-            direction = (panel->x() == panelScreen.x())
-                ? Direction::Left
-                : Direction::Right;
-        }
-    } else {
-        const QRect iconScreen = KWin::effects->clientArea(KWin::ScreenArea, iconRect.center(), KWin::effects->currentDesktop());
-        const QRect rect = iconScreen.intersected(iconRect);
-
-        // TODO: Explain why this is in some sense wrong.
-        if (rect.left() == iconScreen.left()) {
-            direction = Direction::Left;
-        } else if (rect.top() == iconScreen.top()) {
-            direction = Direction::Top;
-        } else if (rect.right() == iconScreen.right()) {
-            direction = Direction::Right;
-        } else {
-            direction = Direction::Bottom;
-        }
-    }
-
-    if (panel != nullptr && panel->screen() == m_window->screen()) {
-        return direction;
-    }
-
-    const QRect windowRect = m_window->geometry();
-
-    if (direction == Direction::Top && windowRect.top() < iconRect.top()) {
-        direction = Direction::Bottom;
-    } else if (direction == Direction::Right && iconRect.right() < windowRect.right()) {
-        direction = Direction::Left;
-    } else if (direction == Direction::Bottom && iconRect.bottom() < windowRect.bottom()) {
-        direction = Direction::Top;
-    } else if (direction == Direction::Left && windowRect.left() < iconRect.left()) {
-        direction = Direction::Right;
-    }
-
-    return direction;
 }
 
 int Model::computeBumpDistance() const

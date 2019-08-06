@@ -136,7 +136,6 @@ private:
     void updateMinimizeStage();
     void updateUnminimizeStage();
 
-    Direction findDirectionToIcon() const;
     int computeBumpDistance() const;
     qreal computeShapeFactor() const;
 
