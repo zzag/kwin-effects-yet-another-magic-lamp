@@ -196,6 +196,8 @@ static inline qreal interpolate(qreal from, qreal to, qreal t)
 template <typename Collection>
 static void transformQuadsLeft(const TransformParameters& params, Collection& quads)
 {
+    // FIXME: Have a generic function that transforms window quads.
+
     const qreal distance = params.windowRect.right() - params.iconRect.right() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
@@ -230,6 +232,8 @@ static void transformQuadsLeft(const TransformParameters& params, Collection& qu
 template <typename Collection>
 static void transformQuadsTop(const TransformParameters& params, Collection& quads)
 {
+    // FIXME: Have a generic function that transforms window quads.
+
     const qreal distance = params.windowRect.bottom() - params.iconRect.bottom() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
@@ -264,6 +268,8 @@ static void transformQuadsTop(const TransformParameters& params, Collection& qua
 template <typename Collection>
 static void transformQuadsRight(const TransformParameters& params, Collection& quads)
 {
+    // FIXME: Have a generic function that transforms window quads.
+
     const qreal distance = params.iconRect.left() - params.windowRect.left() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
@@ -298,6 +304,8 @@ static void transformQuadsRight(const TransformParameters& params, Collection& q
 template <typename Collection>
 static void transformQuadsBottom(const TransformParameters& params, Collection& quads)
 {
+    // FIXME: Have a generic function that transforms window quads.
+
     const qreal distance = params.iconRect.top() - params.windowRect.top() + params.bumpDistance;
 
     for (int i = 0; i < quads.count(); ++i) {
