@@ -299,7 +299,9 @@ static void transformQuadsLeft(
     const TransformParameters& params,
     QVector<WindowQuad>& quads)
 {
-    // FIXME: Have a generic function that transforms window quads.
+    // FIXME: Have a generic function that transforms window quads. Perhaps,
+    // a better approach is to have a transform method that operates on each
+    // individual vertex, e.g. void Model::transform(WindowVertex& vertex).
 
     const QRect iconRect = window->iconGeometry();
     const QRect windowRect = window->geometry();
@@ -340,7 +342,9 @@ static void transformQuadsTop(
     const TransformParameters& params,
     QVector<WindowQuad>& quads)
 {
-    // FIXME: Have a generic function that transforms window quads.
+    // FIXME: Have a generic function that transforms window quads. Perhaps,
+    // a better approach is to have a transform method that operates on each
+    // individual vertex, e.g. void Model::transform(WindowVertex& vertex).
 
     const QRect iconRect = window->iconGeometry();
     const QRect windowRect = window->geometry();
@@ -381,7 +385,9 @@ static void transformQuadsRight(
     const TransformParameters& params,
     QVector<WindowQuad>& quads)
 {
-    // FIXME: Have a generic function that transforms window quads.
+    // FIXME: Have a generic function that transforms window quads. Perhaps,
+    // a better approach is to have a transform method that operates on each
+    // individual vertex, e.g. void Model::transform(WindowVertex& vertex).
 
     const QRect iconRect = window->iconGeometry();
     const QRect windowRect = window->geometry();
@@ -422,7 +428,9 @@ static void transformQuadsBottom(
     const TransformParameters& params,
     QVector<WindowQuad>& quads)
 {
-    // FIXME: Have a generic function that transforms window quads.
+    // FIXME: Have a generic function that transforms window quads. Perhaps,
+    // a better approach is to have a transform method that operates on each
+    // individual vertex, e.g. void Model::transform(WindowVertex& vertex).
 
     const QRect iconRect = window->iconGeometry();
     const QRect windowRect = window->geometry();
