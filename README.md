@@ -64,6 +64,7 @@ the effect:
 
 ```sh
 git clone https://github.com/zzag/kwin-effects-yet-another-magic-lamp.git
+cd kwin-effects-yet-another-magic-lamp
 mkdir build && cd build
 cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
