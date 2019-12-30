@@ -37,7 +37,7 @@ static KWin::EffectWindow* findDock(const KWin::EffectWindow* client)
         if (!window->isDock())
             continue;
 
-        if (!client->geometry().intersects(window->iconGeometry()))
+        if (!window->geometry().intersects(client->iconGeometry()))
             continue;
 
         return window;
