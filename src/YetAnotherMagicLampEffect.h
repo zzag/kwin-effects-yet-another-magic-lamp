@@ -40,7 +40,12 @@ public:
     void postPaintScreen() override;
 
     void prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time) override;
+
+#if KWIN_EFFECT_API_VERSION <= KWIN_EFFECT_API_MAKE_VERSION(0, 228)
     void drawWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data) override;
+#else
+    void drawWindow(KWin::EffectWindow* w, int mask, const QRegion& region, KWin::WindowPaintData& data) override;
+#endif
 
     bool isActive() const override;
     int requestedEffectChainPosition() const override;

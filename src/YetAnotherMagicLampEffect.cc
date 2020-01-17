@@ -168,7 +168,11 @@ void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::Wind
     KWin::effects->prePaintWindow(w, data, time);
 }
 
+#if KWIN_EFFECT_API_VERSION <= KWIN_EFFECT_API_MAKE_VERSION(0, 228)
 void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data)
+#else
+void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, const QRegion& region, KWin::WindowPaintData& data)
+#endif
 {
     auto modelIt = m_models.constFind(w);
     if (modelIt == m_models.constEnd()) {
@@ -180,11 +184,13 @@ void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, QReg
     QVector<WindowQuad> quads = m_meshRenderer->makeGrid(w, m_gridResolution);
     (*modelIt).apply(quads);
 
+    QRegion clipRegion = region;
+
     if ((*modelIt).needsClip()) {
-        region = (*modelIt).clipRegion();
+        clipRegion = (*modelIt).clipRegion();
     }
 
-    m_meshRenderer->render(w, quads, texture, region);
+    m_meshRenderer->render(w, quads, texture, clipRegion);
 }
 
 bool YetAnotherMagicLampEffect::isActive() const
