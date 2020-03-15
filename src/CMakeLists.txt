@@ -16,6 +16,8 @@ find_package (KWinEffects REQUIRED COMPONENTS
     OpenGL
 )
 
+find_package(KWinDBusInterface CONFIG REQUIRED)
+
 find_package (epoxy REQUIRED)
 
 add_subdirectory (kcm)

@@ -7,10 +7,9 @@ kconfig_add_kcfg_files (kcm_SRCS
     ../YetAnotherMagicLampConfig.kcfgc
 )
 
-include (PkgConfigGetVar)
-pkgconfig_getvar (dbus-1 interfaces_dir INTERFACES_DIR)
-qt5_add_dbus_interface (kcm_SRCS ${INTERFACES_DIR}/org.kde.kwin.Effects.xml kwineffects_interface)
 qt5_wrap_ui (kcm_SRCS YetAnotherMagicLampEffectKCM.ui)
+
+qt5_add_dbus_interface (kcm_SRCS ${KWIN_EFFECTS_INTERFACE} kwineffects_interface)
 
 add_library (kwin_yetanothermagiclamp_config MODULE ${kcm_SRCS})
 
