@@ -54,7 +54,7 @@ sudo dnf install cmake extra-cmake-modules kf5-kconfig-devel \
 On Ubuntu
 
 ```sh
-sudo apt install cmake extra-cmake-modules kwin-dev libdbus-1-dev \
+sudo apt install cmake extra-cmake-modules kwin-dev \
     libkf5config-dev libkf5configwidgets-dev libkf5coreaddons-dev \
     libkf5windowsystem-dev qtbase5-dev
 ```
