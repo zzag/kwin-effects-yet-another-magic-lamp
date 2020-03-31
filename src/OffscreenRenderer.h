@@ -26,57 +26,42 @@
 #include <QMap>
 #include <QObject>
 
-/**
- * Helper class to render windows into offscreen textures.
- **/
-class OffscreenRenderer : public QObject {
+class OffscreenRenderer : public QObject
+{
     Q_OBJECT
 
 public:
-    explicit OffscreenRenderer(QObject* parent = nullptr);
+    explicit OffscreenRenderer(QObject *parent = nullptr);
     ~OffscreenRenderer() override;
 
-    /**
-     * Allocates necessary rendering resources.
-     **/
-    void registerWindow(KWin::EffectWindow* w);
-
-    /**
-     * Frees rendering resources.
-     **/
-    void unregisterWindow(KWin::EffectWindow* w);
-
-    /**
-     * Frees rendering resources for all windows.
-     **/
+    void registerWindow(KWin::EffectWindow *window);
+    void unregisterWindow(KWin::EffectWindow *window);
     void unregisterAllWindows();
 
-    /**
-     * Renders the given window into an offscreen texture.
-     **/
-    KWin::GLTexture* render(KWin::EffectWindow* w);
+    KWin::GLTexture *render(KWin::EffectWindow *window);
 
 private Q_SLOTS:
-    void slotWindowGeometryShapeChanged(KWin::EffectWindow* w, const QRect& old);
-    void slotWindowDeleted(KWin::EffectWindow* w);
-    void slotWindowDamaged(KWin::EffectWindow* w);
+    void slotWindowGeometryShapeChanged(KWin::EffectWindow *window, const QRect& old);
+    void slotWindowDeleted(KWin::EffectWindow *window);
+    void slotWindowDamaged(KWin::EffectWindow *window);
 
 private:
-    struct RenderResources {
+    struct RenderResources
+    {
         bool isValid() const
         {
             return texture && renderTarget;
         }
 
-        KWin::GLTexture* texture = nullptr;
-        KWin::GLRenderTarget* renderTarget = nullptr;
+        KWin::GLTexture *texture = nullptr;
+        KWin::GLRenderTarget *renderTarget = nullptr;
         bool isDirty = false;
     };
 
-    RenderResources allocateRenderResources(KWin::EffectWindow* w);
-    void freeRenderResources(RenderResources& resources);
+    RenderResources allocateRenderResources(KWin::EffectWindow *window);
+    void freeRenderResources(RenderResources &resources);
 
-    QMap<KWin::EffectWindow*, RenderResources> m_renderResources;
+    QMap<KWin::EffectWindow *, RenderResources> m_renderResources;
 
     Q_DISABLE_COPY(OffscreenRenderer)
 };

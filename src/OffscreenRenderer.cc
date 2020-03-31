@@ -21,138 +21,157 @@
 // std
 #include <cmath>
 
-OffscreenRenderer::OffscreenRenderer(QObject* parent)
+using namespace KWin;
+
+/**
+    \class OffscreenRenderer
+    \brief Helper class to render windows into offscreen textures.
+*/
+
+/*!
+    Constructs a OffscreenRenderer object with the given \p parent.
+*/
+OffscreenRenderer::OffscreenRenderer(QObject *parent)
     : QObject(parent)
 {
-    connect(KWin::effects, &KWin::EffectsHandler::windowGeometryShapeChanged,
+    connect(effects, &EffectsHandler::windowGeometryShapeChanged,
             this, &OffscreenRenderer::slotWindowGeometryShapeChanged);
-    connect(KWin::effects, &KWin::EffectsHandler::windowDeleted,
+    connect(effects, &EffectsHandler::windowDeleted,
             this, &OffscreenRenderer::slotWindowDeleted);
-    connect(KWin::effects, &KWin::EffectsHandler::windowDamaged,
+    connect(effects, &EffectsHandler::windowDamaged,
             this, &OffscreenRenderer::slotWindowDamaged);
 }
 
+/*!
+    Destructs the OffscreenRenderer object.
+*/
 OffscreenRenderer::~OffscreenRenderer()
 {
     unregisterAllWindows();
 }
 
-void OffscreenRenderer::registerWindow(KWin::EffectWindow* w)
+/*!
+    Allocates necessary rendering resources.
+*/
+void OffscreenRenderer::registerWindow(EffectWindow *window)
 {
-    if (m_renderResources.contains(w)) {
+    if (m_renderResources.contains(window))
         return;
-    }
 
-    RenderResources resources = allocateRenderResources(w);
-    if (resources.isValid()) {
-        m_renderResources[w] = resources;
-    }
+    RenderResources resources = allocateRenderResources(window);
+    if (resources.isValid())
+        m_renderResources[window] = resources;
 }
 
-void OffscreenRenderer::unregisterWindow(KWin::EffectWindow* w)
+/*!
+    Frees rendering resources.
+*/
+void OffscreenRenderer::unregisterWindow(EffectWindow *window)
 {
-    auto it = m_renderResources.find(w);
-    if (it == m_renderResources.end()) {
+    auto it = m_renderResources.find(window);
+    if (it == m_renderResources.end())
         return;
-    }
 
     freeRenderResources(*it);
     m_renderResources.erase(it);
 }
 
+/*!
+    Frees rendering resources for all windows.
+*/
 void OffscreenRenderer::unregisterAllWindows()
 {
     const auto windows = m_renderResources.keys();
-    for (KWin::EffectWindow* window : windows) {
+    for (EffectWindow *window : windows)
         unregisterWindow(window);
-    }
 }
 
-KWin::GLTexture* OffscreenRenderer::render(KWin::EffectWindow* w)
+/*!
+    Renders the given window into an offscreen texture.
+*/
+GLTexture *OffscreenRenderer::render(EffectWindow *window)
 {
-    auto it = m_renderResources.find(w);
+    auto it = m_renderResources.find(window);
     if (it == m_renderResources.end())
         return nullptr;
 
     if (!it->isDirty)
         return it->texture;
 
-    KWin::GLRenderTarget::pushRenderTarget(it->renderTarget);
+    GLRenderTarget::pushRenderTarget(it->renderTarget);
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    const int mask = KWin::Effect::PAINT_WINDOW_TRANSFORMED | KWin::Effect::PAINT_WINDOW_TRANSLUCENT;
+    const int mask = Effect::PAINT_WINDOW_TRANSFORMED | Effect::PAINT_WINDOW_TRANSLUCENT;
 
-    KWin::WindowPaintData data(w);
+    WindowPaintData data(window);
 
     QMatrix4x4 projectionMatrix;
     projectionMatrix.ortho(QRect(0, 0, it->texture->width(), it->texture->height()));
     data.setProjectionMatrix(projectionMatrix);
 
-    data.setXTranslation(-w->expandedGeometry().x());
-    data.setYTranslation(-w->expandedGeometry().y());
+    data.setXTranslation(-window->expandedGeometry().x());
+    data.setYTranslation(-window->expandedGeometry().y());
 
-    KWin::effects->drawWindow(w, mask, KWin::infiniteRegion(), data);
+    effects->drawWindow(window, mask, infiniteRegion(), data);
 
-    KWin::GLRenderTarget::popRenderTarget();
+    GLRenderTarget::popRenderTarget();
 
     it->isDirty = false;
 
     return it->texture;
 }
 
-void OffscreenRenderer::slotWindowGeometryShapeChanged(KWin::EffectWindow* w, const QRect& old)
+void OffscreenRenderer::slotWindowGeometryShapeChanged(EffectWindow *window, const QRect &old)
 {
-    Q_UNUSED(old)
-
-    auto it = m_renderResources.find(w);
-    if (it == m_renderResources.end()) {
+    if (window->size() == old.size())
         return;
-    }
 
-    KWin::effects->makeOpenGLContextCurrent();
+    auto it = m_renderResources.find(window);
+    if (it == m_renderResources.end())
+        return;
+
+    effects->makeOpenGLContextCurrent();
     freeRenderResources(*it);
-    RenderResources resources = allocateRenderResources(w);
-    if (resources.isValid()) {
+    RenderResources resources = allocateRenderResources(window);
+    if (resources.isValid())
         *it = resources;
-    } else {
+    else
         m_renderResources.erase(it);
-    }
-    KWin::effects->doneOpenGLContextCurrent();
+    effects->doneOpenGLContextCurrent();
 }
 
-void OffscreenRenderer::slotWindowDeleted(KWin::EffectWindow* w)
+void OffscreenRenderer::slotWindowDeleted(EffectWindow *window)
 {
-    KWin::effects->makeOpenGLContextCurrent();
-    unregisterWindow(w);
-    KWin::effects->doneOpenGLContextCurrent();
+    effects->makeOpenGLContextCurrent();
+    unregisterWindow(window);
+    effects->doneOpenGLContextCurrent();
 }
 
-void OffscreenRenderer::slotWindowDamaged(KWin::EffectWindow* w)
+void OffscreenRenderer::slotWindowDamaged(EffectWindow *window)
 {
-    auto it = m_renderResources.find(w);
+    auto it = m_renderResources.find(window);
     if (it != m_renderResources.end())
         it->isDirty = true;
 }
 
 OffscreenRenderer::RenderResources
-OffscreenRenderer::allocateRenderResources(KWin::EffectWindow* w)
+OffscreenRenderer::allocateRenderResources(EffectWindow *window)
 {
-    const QRect geometry = w->expandedGeometry();
+    const QRect geometry = window->expandedGeometry();
 
     const int levels = std::floor(std::log2(std::min(geometry.width(), geometry.height()))) + 1;
-    QScopedPointer<KWin::GLTexture> texture;
-    texture.reset(new KWin::GLTexture(GL_RGBA8, geometry.width(), geometry.height(), levels));
+    QScopedPointer<GLTexture> texture;
+    texture.reset(new GLTexture(GL_RGBA8, geometry.width(), geometry.height(), levels));
     texture->setFilter(GL_LINEAR_MIPMAP_LINEAR);
     texture->setWrapMode(GL_CLAMP_TO_EDGE);
 
-    QScopedPointer<KWin::GLRenderTarget> renderTarget;
-    renderTarget.reset(new KWin::GLRenderTarget(*texture));
+    QScopedPointer<GLRenderTarget> renderTarget;
+    renderTarget.reset(new GLRenderTarget(*texture));
 
-    if (!renderTarget->valid()) {
+    if (!renderTarget->valid())
         return {};
-    }
 
     RenderResources resources = {};
     resources.texture = texture.take();
@@ -162,7 +181,7 @@ OffscreenRenderer::allocateRenderResources(KWin::EffectWindow* w)
     return resources;
 }
 
-void OffscreenRenderer::freeRenderResources(RenderResources& resources)
+void OffscreenRenderer::freeRenderResources(RenderResources &resources)
 {
     delete resources.renderTarget;
     delete resources.texture;
