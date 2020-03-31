@@ -28,7 +28,6 @@ set (effect_SRCS
     WindowMeshRenderer.cc
     YetAnotherMagicLampEffect.cc
     plugin.cc
-    utils.cc
 )
 
 kconfig_add_kcfg_files (effect_SRCS
