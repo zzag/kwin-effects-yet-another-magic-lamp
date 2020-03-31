@@ -25,9 +25,11 @@ OffscreenRenderer::OffscreenRenderer(QObject* parent)
     : QObject(parent)
 {
     connect(KWin::effects, &KWin::EffectsHandler::windowGeometryShapeChanged,
-        this, &OffscreenRenderer::slotWindowGeometryShapeChanged);
+            this, &OffscreenRenderer::slotWindowGeometryShapeChanged);
     connect(KWin::effects, &KWin::EffectsHandler::windowDeleted,
-        this, &OffscreenRenderer::slotWindowDeleted);
+            this, &OffscreenRenderer::slotWindowDeleted);
+    connect(KWin::effects, &KWin::EffectsHandler::windowDamaged,
+            this, &OffscreenRenderer::slotWindowDamaged);
 }
 
 OffscreenRenderer::~OffscreenRenderer()
@@ -68,10 +70,12 @@ void OffscreenRenderer::unregisterAllWindows()
 
 KWin::GLTexture* OffscreenRenderer::render(KWin::EffectWindow* w)
 {
-    auto it = m_renderResources.constFind(w);
-    if (it == m_renderResources.constEnd()) {
+    auto it = m_renderResources.find(w);
+    if (it == m_renderResources.end())
         return nullptr;
-    }
+
+    if (!it->isDirty)
+        return it->texture;
 
     KWin::GLRenderTarget::pushRenderTarget(it->renderTarget);
 
@@ -92,6 +96,8 @@ KWin::GLTexture* OffscreenRenderer::render(KWin::EffectWindow* w)
     KWin::effects->drawWindow(w, mask, KWin::infiniteRegion(), data);
 
     KWin::GLRenderTarget::popRenderTarget();
+
+    it->isDirty = false;
 
     return it->texture;
 }
@@ -123,6 +129,13 @@ void OffscreenRenderer::slotWindowDeleted(KWin::EffectWindow* w)
     KWin::effects->doneOpenGLContextCurrent();
 }
 
+void OffscreenRenderer::slotWindowDamaged(KWin::EffectWindow* w)
+{
+    auto it = m_renderResources.find(w);
+    if (it != m_renderResources.end())
+        it->isDirty = true;
+}
+
 OffscreenRenderer::RenderResources
 OffscreenRenderer::allocateRenderResources(KWin::EffectWindow* w)
 {
@@ -144,6 +157,7 @@ OffscreenRenderer::allocateRenderResources(KWin::EffectWindow* w)
     RenderResources resources = {};
     resources.texture = texture.take();
     resources.renderTarget = renderTarget.take();
+    resources.isDirty = true;
 
     return resources;
 }

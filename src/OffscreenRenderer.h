@@ -59,6 +59,7 @@ public:
 private Q_SLOTS:
     void slotWindowGeometryShapeChanged(KWin::EffectWindow* w, const QRect& old);
     void slotWindowDeleted(KWin::EffectWindow* w);
+    void slotWindowDamaged(KWin::EffectWindow* w);
 
 private:
     struct RenderResources {
@@ -69,6 +70,7 @@ private:
 
         KWin::GLTexture* texture = nullptr;
         KWin::GLRenderTarget* renderTarget = nullptr;
+        bool isDirty = false;
     };
 
     RenderResources allocateRenderResources(KWin::EffectWindow* w);
