@@ -37,26 +37,29 @@
 #include <emmintrin.h>
 #endif
 
-WindowMeshRenderer::WindowMeshRenderer(QObject* parent)
+/*!
+    Constructs a WindowMeshRenderer object with the given \p parent.
+*/
+WindowMeshRenderer::WindowMeshRenderer(QObject *parent)
     : QObject(parent)
 {
 }
 
-QVector<WindowQuad> WindowMeshRenderer::makeGrid(const KWin::EffectWindow* w, int gridResolution)
+QVector<WindowQuad> WindowMeshRenderer::makeGrid(const KWin::EffectWindow *window, int gridResolution)
 {
     QVector<WindowQuad> quads;
     quads.reserve(gridResolution * gridResolution);
 
-    const QRectF geometry = w->geometry();
-    const QRectF expandedGeometry = w->expandedGeometry();
+    const QRectF geometry = window->geometry();
+    const QRectF expandedGeometry = window->expandedGeometry();
 
     const qreal initialX = expandedGeometry.x() - geometry.x();
     const qreal initialY = expandedGeometry.y() - geometry.y();
     const qreal initialU = 0.0;
     const qreal initialV = 0.0;
 
-    const qreal dx = static_cast<qreal>(w->expandedGeometry().width()) / gridResolution;
-    const qreal dy = static_cast<qreal>(w->expandedGeometry().height()) / gridResolution;
+    const qreal dx = static_cast<qreal>(window->expandedGeometry().width()) / gridResolution;
+    const qreal dy = static_cast<qreal>(window->expandedGeometry().height()) / gridResolution;
     const qreal du = 1.0 / gridResolution;
     const qreal dv = 1.0 / gridResolution;
 
@@ -100,8 +103,8 @@ QVector<WindowQuad> WindowMeshRenderer::makeGrid(const KWin::EffectWindow* w, in
 }
 
 // Copied from libkwineffects.
-static void uploadQuads(GLenum primitiveType, const QVector<WindowQuad>& quads,
-    const QMatrix4x4& textureMatrix, KWin::GLVertex2D* out)
+static void uploadQuads(GLenum primitiveType, const QVector<WindowQuad> &quads,
+                        const QMatrix4x4 &textureMatrix, KWin::GLVertex2D *out)
 {
     // Since we know that the texture matrix just scales and translates
     // we can use this information to optimize the transformation.
@@ -113,19 +116,19 @@ static void uploadQuads(GLenum primitiveType, const QVector<WindowQuad>& quads,
 #ifdef HAVE_SSE2
         if (!(intptr_t(out) & 0xf)) {
             for (int i = 0; i < quads.count(); i++) {
-                const WindowQuad& quad = quads[i];
+                const WindowQuad &quad = quads[i];
                 KWIN_ALIGN(16)
                 KWin::GLVertex2D v[4];
 
                 for (int j = 0; j < 4; j++) {
-                    const WindowVertex& wv = quad[j];
+                    const WindowVertex &wv = quad[j];
 
                     v[j].position = QVector2D(wv.x(), wv.y());
                     v[j].texcoord = QVector2D(wv.u(), wv.v()) * scale + shift;
                 }
 
-                const __m128i* srcP = (const __m128i*)&v;
-                __m128i* dstP = (__m128i*)out;
+                const __m128i *srcP = (const __m128i *)&v;
+                __m128i *dstP = (__m128i *)out;
 
                 _mm_stream_si128(&dstP[0], _mm_load_si128(&srcP[0])); // Top-left
                 _mm_stream_si128(&dstP[1], _mm_load_si128(&srcP[1])); // Top-right
@@ -138,10 +141,10 @@ static void uploadQuads(GLenum primitiveType, const QVector<WindowQuad>& quads,
 #endif // HAVE_SSE2
         {
             for (int i = 0; i < quads.count(); i++) {
-                const WindowQuad& quad = quads[i];
+                const WindowQuad &quad = quads[i];
 
                 for (int j = 0; j < 4; j++) {
-                    const WindowVertex& wv = quad[j];
+                    const WindowVertex &wv = quad[j];
 
                     KWin::GLVertex2D v;
                     v.position = QVector2D(wv.x(), wv.y());
@@ -157,19 +160,18 @@ static void uploadQuads(GLenum primitiveType, const QVector<WindowQuad>& quads,
 #ifdef HAVE_SSE2
         if (!(intptr_t(out) & 0xf)) {
             for (int i = 0; i < quads.count(); i++) {
-                const WindowQuad& quad = quads[i];
-                KWIN_ALIGN(16)
-                KWin::GLVertex2D v[4];
+                const WindowQuad &quad = quads[i];
+                KWIN_ALIGN(16) KWin::GLVertex2D v[4];
 
                 for (int j = 0; j < 4; j++) {
-                    const WindowVertex& wv = quad[j];
+                    const WindowVertex &wv = quad[j];
 
                     v[j].position = QVector2D(wv.x(), wv.y());
                     v[j].texcoord = QVector2D(wv.u(), wv.v()) * scale + shift;
                 }
 
-                const __m128i* srcP = (const __m128i*)&v;
-                __m128i* dstP = (__m128i*)out;
+                const __m128i *srcP = (const __m128i *)&v;
+                __m128i *dstP = (__m128i *)out;
 
                 __m128i src[4];
                 src[0] = _mm_load_si128(&srcP[0]); // Top-left
@@ -193,11 +195,11 @@ static void uploadQuads(GLenum primitiveType, const QVector<WindowQuad>& quads,
 #endif // HAVE_SSE2
         {
             for (int i = 0; i < quads.count(); i++) {
-                const WindowQuad& quad = quads[i];
+                const WindowQuad &quad = quads[i];
                 KWin::GLVertex2D v[4]; // Four unique vertices / quad
 
                 for (int j = 0; j < 4; j++) {
-                    const WindowVertex& wv = quad[j];
+                    const WindowVertex &wv = quad[j];
 
                     v[j].position = QVector2D(wv.x(), wv.y());
                     v[j].texcoord = QVector2D(wv.u(), wv.v()) * scale + shift;
@@ -221,22 +223,23 @@ static void uploadQuads(GLenum primitiveType, const QVector<WindowQuad>& quads,
     }
 }
 
-void WindowMeshRenderer::render(KWin::EffectWindow* w, const QVector<WindowQuad>& quads, KWin::GLTexture* texture, const QRegion& clipRegion) const
+void WindowMeshRenderer::render(KWin::EffectWindow *window, const QVector<WindowQuad> &quads,
+                                KWin::GLTexture *texture, const QRegion &clipRegion) const
 {
-    KWin::GLShader* shader = KWin::ShaderManager::instance()->pushShader(KWin::ShaderTrait::MapTexture);
+    KWin::GLShader *shader = KWin::ShaderManager::instance()->pushShader(KWin::ShaderTrait::MapTexture);
 
     QMatrix4x4 modelViewProjection;
     const QRect screenRect = KWin::effects->virtualScreenGeometry();
     modelViewProjection.ortho(0, screenRect.width(), screenRect.height(), 0, 0, 65535);
-    modelViewProjection.translate(w->x(), w->y());
+    modelViewProjection.translate(window->x(), window->y());
     shader->setUniform(KWin::GLShader::ModelViewProjectionMatrix, modelViewProjection);
 
     const GLenum primitiveType = KWin::GLVertexBuffer::supportsIndexedQuads() ? GL_QUADS : GL_TRIANGLES;
     const int verticesPerQuad = primitiveType == GL_QUADS ? 4 : 6;
     const size_t vboSize = verticesPerQuad * quads.count() * sizeof(KWin::GLVertex2D);
 
-    KWin::GLVertexBuffer* vbo = KWin::GLVertexBuffer::streamingBuffer();
-    auto map = static_cast<KWin::GLVertex2D*>(vbo->map(vboSize));
+    KWin::GLVertexBuffer *vbo = KWin::GLVertexBuffer::streamingBuffer();
+    auto map = static_cast<KWin::GLVertex2D *>(vbo->map(vboSize));
     uploadQuads(primitiveType, quads, texture->matrix(KWin::NormalizedCoordinates), map);
     vbo->unmap();
 

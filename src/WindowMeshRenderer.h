@@ -27,13 +27,15 @@
 // Qt
 #include <QVector>
 
-class WindowMeshRenderer : public QObject {
+class WindowMeshRenderer : public QObject
+{
     Q_OBJECT
 
 public:
-    explicit WindowMeshRenderer(QObject* parent = nullptr);
+    explicit WindowMeshRenderer(QObject *parent = nullptr);
 
-    QVector<WindowQuad> makeGrid(const KWin::EffectWindow* w, int blockSize);
+    QVector<WindowQuad> makeGrid(const KWin::EffectWindow *window, int blockSize);
 
-    void render(KWin::EffectWindow* w, const QVector<WindowQuad>& quads, KWin::GLTexture* texture, const QRegion& clipRegion) const;
+    void render(KWin::EffectWindow *window, const QVector<WindowQuad> &quads,
+                KWin::GLTexture *texture, const QRegion &clipRegion) const;
 };
