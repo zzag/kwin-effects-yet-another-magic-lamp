@@ -1,19 +1,19 @@
-set (kcm_SRCS
+set(kcm_SRCS
     YetAnotherMagicLampEffectKCM.cc
     plugin.cc
 )
 
-kconfig_add_kcfg_files (kcm_SRCS
+kconfig_add_kcfg_files(kcm_SRCS
     ../YetAnotherMagicLampConfig.kcfgc
 )
 
-qt5_wrap_ui (kcm_SRCS YetAnotherMagicLampEffectKCM.ui)
+qt5_wrap_ui(kcm_SRCS YetAnotherMagicLampEffectKCM.ui)
 
-qt5_add_dbus_interface (kcm_SRCS ${KWIN_EFFECTS_INTERFACE} kwineffects_interface)
+qt5_add_dbus_interface(kcm_SRCS ${KWIN_EFFECTS_INTERFACE} kwineffects_interface)
 
-add_library (kwin_yetanothermagiclamp_config MODULE ${kcm_SRCS})
+add_library(kwin_yetanothermagiclamp_config MODULE ${kcm_SRCS})
 
-target_link_libraries (kwin_yetanothermagiclamp_config
+target_link_libraries(kwin_yetanothermagiclamp_config
     Qt5::Core
     Qt5::DBus
     Qt5::Gui
@@ -22,7 +22,7 @@ target_link_libraries (kwin_yetanothermagiclamp_config
     KF5::ConfigWidgets
 )
 
-install (
+install(
     TARGETS
         kwin_yetanothermagiclamp_config
 

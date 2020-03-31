@@ -1,14 +1,12 @@
-cmake_minimum_required (VERSION 3.0)
-project (kwin-effects-yaml)
+cmake_minimum_required(VERSION 3.0)
+project(kwin-effects-yaml)
 
-include (FeatureSummary)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-set (CMAKE_CXX_STANDARD 14)
-set (CMAKE_CXX_STANDARD_REQUIRED ON)
-set (CMAKE_CXX_EXTENSIONS OFF)
-
-find_package (ECM REQUIRED NO_MODULE)
-set (CMAKE_MODULE_PATH
+find_package(ECM REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
     ${ECM_MODULE_PATH}
     ${ECM_KDE_MODULE_DIR}
@@ -16,10 +14,33 @@ set (CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake/Modules
 )
 
-include (KDEInstallDirs)
-include (KDECMakeSettings)
-include (KDECompilerSettings NO_POLICY_SCOPE)
+include(FeatureSummary)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings NO_POLICY_SCOPE)
 
-add_subdirectory (src)
+find_package(Qt5 REQUIRED COMPONENTS
+    Core
+    DBus
+    Gui
+)
 
-feature_summary (WHAT ALL)
+find_package(KF5 REQUIRED COMPONENTS
+    Config
+    ConfigWidgets
+    CoreAddons
+    WindowSystem
+)
+
+find_package(KWinEffects REQUIRED COMPONENTS
+    Core
+    OpenGL
+)
+
+find_package(KWinDBusInterface CONFIG REQUIRED)
+
+find_package(epoxy REQUIRED)
+
+add_subdirectory(src)
+
+feature_summary(WHAT ALL)
