@@ -1,5 +1,5 @@
 #.rst:
-# FindKWinEffects
+# Findkwineffects
 # ---------------
 #
 # Try to find libkwineffects.
@@ -8,9 +8,9 @@
 # argument to find_modules. The following components are
 # available::
 #
-#   Core
-#   OpenGL
-#   XRender
+#   kwineffects
+#   kwinglutils
+#   kwinxrenderutils
 #
 # If no components are specified, this module will act as though all components
 # were passed to OPTIONAL_COMPONENTS.
@@ -18,28 +18,28 @@
 # This module will define the following variables, independently of the
 # components searched for or found:
 #
-# ``KWinEffects_FOUND``
+# ``kwineffects_FOUND``
 #     True if (the requestion version of) libkwineffects is available
-# ``KWinEffects_TARGETS``
+# ``kwineffects_TARGETS``
 #     A list of all targets imported by this module (note that there may be more
 #     than the components that were requested)
-# ``KWinEffects_LIBRARIES``
+# ``kwineffects_LIBRARIES``
 #     This can be passed to target_link_libraries() instead of the imported
 #     targets
-# ``KWinEffects_INCLUDE_DIRS``
+# ``kwineffects_INCLUDE_DIRS``
 #     This should be passed to target_include_directories() if the targets are
 #     not used for linking
-# ``KWinEffects_DEFINITIONS``
+# ``kwineffects_DEFINITIONS``
 #     This should be passed to target_compile_options() if the targets are not
 #     used for linking
 #
-# For each searched-for components, ``KWinEffects_<component>_FOUND`` will be
+# For each searched-for components, ``kwineffects_<component>_FOUND`` will be
 # set to true if the corresponding libkwineffects library was found, and false
-# otherwise.  If ``KWinEffects_<component>_FOUND`` is true, the imported target
-# ``KWinEffects::<component>`` will be defined.
+# otherwise.  If ``kwineffects_<component>_FOUND`` is true, the imported target
+# ``kwineffects::<component>`` will be defined.
 
 #=============================================================================
-# Copyright 2018 Vlad Zagorodniy <vladzzag@gmail.com>
+# Copyright 2019 Vlad Zagorodniy <vladzzag@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -65,37 +65,37 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #=============================================================================
 
-include (ECMFindModuleHelpers)
-ecm_find_package_version_check (KWinEffects)
+include(ECMFindModuleHelpers)
+ecm_find_package_version_check(kwineffects)
 
-set (KWinEffects_known_components
-    Core
-    OpenGL
-    XRender
+set(kwineffects_known_components
+    kwineffects
+    kwinglutils
+    kwinxrenderutils
 )
-set (KWinEffects_default_components ${KWinEffects_known_components})
+set(kwineffects_default_components ${kwineffects_known_components})
 
-set (KWinEffects_Core_header "kwineffects.h")
-set (KWinEffects_Core_lib "kwineffects")
-set (KWinEffects_OpenGL_header "kwinglutils.h")
-set (KWinEffects_OpenGL_lib "kwinglutils")
-set (KWinEffects_XRender_header "kwinxrenderutils.h")
-set (KWinEffects_XRender_lib "kwinxrenderutils")
+set(kwineffects_kwineffects_header "kwineffects.h")
+set(kwineffects_kwineffects_lib "kwineffects")
+set(kwineffects_kwinglutils_header "kwinglutils.h")
+set(kwineffects_kwinglutils_lib "kwinglutils")
+set(kwineffects_kwinxrenderutils_header "kwinxrenderutils.h")
+set(kwineffects_kwinxrenderutils_lib "kwinxrenderutils")
 
-ecm_find_package_parse_components (KWinEffects
-    RESULT_VAR KWinEffects_components
-    KNOWN_COMPONENTS ${KWinEffects_known_components}
-    DEFAULT_COMPONENTS ${KWinEffects_default_components}
-)
-
-ecm_find_package_handle_library_components (KWinEffects
-    COMPONENTS ${KWinEffects_components}
+ecm_find_package_parse_components(kwineffects
+    RESULT_VAR kwineffects_components
+    KNOWN_COMPONENTS ${kwineffects_known_components}
+    DEFAULT_COMPONENTS ${kwineffects_default_components}
 )
 
-find_package_handle_standard_args (KWinEffects
+ecm_find_package_handle_library_components(kwineffects
+    COMPONENTS ${kwineffects_components}
+)
+
+find_package_handle_standard_args(kwineffects
     FOUND_VAR
-        KWinEffects_FOUND
+        kwineffects_FOUND
     REQUIRED_VARS
-        KWinEffects_LIBRARIES
+        kwineffects_LIBRARIES
     HANDLE_COMPONENTS
 )

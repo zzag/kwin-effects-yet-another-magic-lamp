@@ -32,9 +32,9 @@ find_package(KF5 REQUIRED COMPONENTS
     WindowSystem
 )
 
-find_package(KWinEffects REQUIRED COMPONENTS
-    Core
-    OpenGL
+find_package(kwineffects REQUIRED COMPONENTS
+    kwineffects
+    kwinglutils
 )
 
 find_package(KWinDBusInterface CONFIG REQUIRED)

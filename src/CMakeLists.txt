@@ -22,8 +22,8 @@ target_link_libraries(kwin4_effect_yetanothermagiclamp
     KF5::ConfigGui
     KF5::CoreAddons
     KF5::WindowSystem
-    KWinEffects::Core
-    KWinEffects::OpenGL
+    kwineffects::kwineffects
+    kwineffects::kwinglutils
     ${epoxy_LIBRARY}
 )
 
