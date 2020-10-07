@@ -159,6 +159,7 @@ void OffscreenRenderer::slotWindowDamaged(EffectWindow *window)
 OffscreenRenderer::RenderResources
 OffscreenRenderer::allocateRenderResources(EffectWindow *window)
 {
+    effects->makeOpenGLContextCurrent();
     const QRect geometry = window->expandedGeometry();
 
     const int levels = std::floor(std::log2(std::min(geometry.width(), geometry.height()))) + 1;
