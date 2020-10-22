@@ -19,5 +19,6 @@
     },
     "org.kde.kwin.effect": {
         "exclusiveGroup": "minimize"
-    }
+    },
+    "X-KDE-ConfigModule": "kwin_yetanothermagiclamp_config"
 }
