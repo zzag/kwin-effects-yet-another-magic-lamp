@@ -48,7 +48,7 @@ On Fedora
 ```sh
 sudo dnf install cmake extra-cmake-modules kf5-kconfig-devel \
     kf5-kcoreaddons-devel kf5-kwindowsystem-devel kwin-devel \
-    qt5-qtbase-devel
+    qt5-qtbase-devel libepoxy-devel kf5-kconfigwidgets-devel
 ```
 
 On Ubuntu
