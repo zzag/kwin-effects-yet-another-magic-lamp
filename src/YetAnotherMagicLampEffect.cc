@@ -40,6 +40,7 @@ enum ShapeCurve {
 };
 
 YetAnotherMagicLampEffect::YetAnotherMagicLampEffect()
+    : m_lastPresentTime(std::chrono::milliseconds::zero())
 {
     reconfigure(ReconfigureAll);
 
@@ -127,9 +128,12 @@ void YetAnotherMagicLampEffect::reconfigure(ReconfigureFlags flags)
     m_gridResolution = YetAnotherMagicLampConfig::gridResolution();
 }
 
-void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, int time)
+void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, std::chrono::milliseconds presentTime)
 {
-    const std::chrono::milliseconds delta(time);
+    std::chrono::milliseconds delta = std::chrono::milliseconds::zero();
+    if (m_lastPresentTime.count())
+        delta = presentTime - m_lastPresentTime;
+    m_lastPresentTime = presentTime;
 
     for (Model& model : m_models) {
         model.step(delta);
@@ -137,7 +141,7 @@ void YetAnotherMagicLampEffect::prePaintScreen(KWin::ScreenPrePaintData& data, i
 
     data.mask |= PAINT_SCREEN_WITH_TRANSFORMED_WINDOWS;
 
-    KWin::effects->prePaintScreen(data, time);
+    KWin::effects->prePaintScreen(data, presentTime);
 }
 
 void YetAnotherMagicLampEffect::postPaintScreen()
@@ -152,18 +156,21 @@ void YetAnotherMagicLampEffect::postPaintScreen()
         }
     }
 
+    if (m_models.isEmpty())
+        m_lastPresentTime = std::chrono::milliseconds::zero();
+
     KWin::effects->addRepaintFull();
     KWin::effects->postPaintScreen();
 }
 
-void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time)
+void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, std::chrono::milliseconds presentTime)
 {
     auto modelIt = m_models.constFind(w);
     if (modelIt != m_models.constEnd()) {
         w->enablePainting(KWin::EffectWindow::PAINT_DISABLED_BY_MINIMIZE);
     }
 
-    KWin::effects->prePaintWindow(w, data, time);
+    KWin::effects->prePaintWindow(w, data, presentTime);
 }
 
 void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, const QRegion& region, KWin::WindowPaintData& data)

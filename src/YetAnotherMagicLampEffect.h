@@ -36,10 +36,10 @@ public:
 
     void reconfigure(ReconfigureFlags flags) override;
 
-    void prePaintScreen(KWin::ScreenPrePaintData& data, int time) override;
+    void prePaintScreen(KWin::ScreenPrePaintData& data, std::chrono::milliseconds presentTime) override;
     void postPaintScreen() override;
 
-    void prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time) override;
+    void prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, std::chrono::milliseconds presentTime) override;
 
     void drawWindow(KWin::EffectWindow* w, int mask, const QRegion& region, KWin::WindowPaintData& data) override;
 
@@ -57,6 +57,7 @@ private Q_SLOTS:
 private:
     Model::Parameters m_modelParameters;
     int m_gridResolution;
+    std::chrono::milliseconds m_lastPresentTime;
 
     QMap<KWin::EffectWindow*, Model> m_models;
     OffscreenRenderer* m_offscreenRenderer;
