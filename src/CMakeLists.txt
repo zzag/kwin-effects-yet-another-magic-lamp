@@ -24,7 +24,7 @@ target_link_libraries(kwin4_effect_yetanothermagiclamp
     KF5::WindowSystem
     kwineffects::kwineffects
     kwineffects::kwinglutils
-    ${epoxy_LIBRARY}
+    epoxy::epoxy
 )
 
 install(

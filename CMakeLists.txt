@@ -25,7 +25,7 @@ find_package(Qt5 REQUIRED COMPONENTS
     Gui
 )
 
-find_package(KF5 REQUIRED COMPONENTS
+find_package(KF5 5.78 REQUIRED COMPONENTS
     Config
     ConfigWidgets
     CoreAddons
