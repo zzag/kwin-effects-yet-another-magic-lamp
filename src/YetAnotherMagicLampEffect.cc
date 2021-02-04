@@ -49,10 +49,8 @@ YetAnotherMagicLampEffect::YetAnotherMagicLampEffect()
         this, &YetAnotherMagicLampEffect::slotWindowUnminimized);
     connect(KWin::effects, &KWin::EffectsHandler::windowDeleted,
         this, &YetAnotherMagicLampEffect::slotWindowDeleted);
-#if KWIN_EFFECT_API_VERSION >= KWIN_EFFECT_API_MAKE_VERSION(0, 226)
     connect(KWin::effects, &KWin::EffectsHandler::activeFullScreenEffectChanged,
         this, &YetAnotherMagicLampEffect::slotActiveFullScreenEffectChanged);
-#endif
 
     m_offscreenRenderer = new OffscreenRenderer(this);
     m_meshRenderer = new WindowMeshRenderer(this);
@@ -168,11 +166,7 @@ void YetAnotherMagicLampEffect::prePaintWindow(KWin::EffectWindow* w, KWin::Wind
     KWin::effects->prePaintWindow(w, data, time);
 }
 
-#if KWIN_EFFECT_API_VERSION <= KWIN_EFFECT_API_MAKE_VERSION(0, 228)
-void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data)
-#else
 void YetAnotherMagicLampEffect::drawWindow(KWin::EffectWindow* w, int mask, const QRegion& region, KWin::WindowPaintData& data)
-#endif
 {
     auto modelIt = m_models.constFind(w);
     if (modelIt == m_models.constEnd()) {
