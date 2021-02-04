@@ -12,7 +12,6 @@ kconfig_add_kcfg_files(effect_SRCS
     YetAnotherMagicLampConfig.kcfgc
 )
 
-include_directories(${epoxy_INCLUDE_DIR})
 add_library(kwin4_effect_yetanothermagiclamp SHARED ${effect_SRCS})
 
 target_link_libraries(kwin4_effect_yetanothermagiclamp
