@@ -18,9 +18,10 @@
 // Own
 #include "YetAnotherMagicLampEffect.h"
 
-KWIN_EFFECT_FACTORY_ENABLED(YetAnotherMagicLampEffectFactory,
-                            YetAnotherMagicLampEffect,
-                            "metadata.json",
-                            return false;)
+KWIN_EFFECT_FACTORY_SUPPORTED_ENABLED(YetAnotherMagicLampEffectFactory,
+                                      YetAnotherMagicLampEffect,
+                                      "metadata.json",
+                                      return YetAnotherMagicLampEffect::supported();,
+                                      return false;)
 
 #include "plugin.moc"
