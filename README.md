@@ -73,6 +73,19 @@ make
 sudo make install
 ```
 
+
+#### Building the effect against older Plasma versions
+
+If you want to build this effect against an older Plasma release, checkout
+the corresponding `Plasma/x.yz` branch, for example
+
+```sh
+git clone https://github.com/zzag/kwin-effects-yet-another-magic-lamp.git
+cd kwin-effects-yet-another-magic-lamp
+git checkout Plasma/5.20
+```
+
+
 ### Using the effect
 
 Go to System Settings > Desktop Behavior > Desktop Effects, and select
