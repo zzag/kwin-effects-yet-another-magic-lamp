@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 project(kwin-effects-yaml)
 
+set(KF_MIN_VERSION "5.78")
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(ECM REQUIRED NO_MODULE)
+find_package(ECM ${KF_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH}
     ${ECM_MODULE_PATH}
@@ -25,7 +27,7 @@ find_package(Qt5 REQUIRED COMPONENTS
     Gui
 )
 
-find_package(KF5 5.78 REQUIRED COMPONENTS
+find_package(KF5 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Config
     ConfigWidgets
     CoreAddons
